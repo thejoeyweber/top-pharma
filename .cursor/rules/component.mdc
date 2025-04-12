@@ -1,0 +1,18 @@
+---
+description: 
+globs: packages/ui/src/components/**/*.tsx,apps/web/components/**/*.tsx
+alwaysApply: false
+---
+---
+description: Rules for component development and usage
+---
+
+# Component Development Rules 🏗️
+- Never modify shadcn components directly, always extend them
+- Start with shadcn base components, then extend as needed
+- Export client components as `export const MyComponent`
+- Add new shadcn components using: `pnpm dlx shadcn@latest add [component] -c apps/web`
+
+# Component Usage Rules 🛠️
+- Always import shared components from `@workspace/ui/components`
+- Never duplicate shared components in `apps/web`

@@ -1,0 +1,19 @@
+---
+description: Rules for development workflow and command execution. Consult when running terminal commands.
+globs: 
+alwaysApply: false
+---
+---
+description: Rules for development workflow and command execution
+---
+
+# Command Execution Rules 🛠️
+- Use PowerShell-compatible commands:
+  - Use `;` instead of `&&` for command chaining
+  - Use `cd` commands separately from other operations
+  - Prefix npm/pnpm commands with `npx` when running one-off tools
+- When installing packages:
+  - Install dependencies from root using `-w` workspace flag
+  - Or navigate to specific package directory first, then install
+- Always verify component.json configurations before adding new components
+- Never run git commands

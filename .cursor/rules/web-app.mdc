@@ -3,6 +3,10 @@ description:
 globs: apps/web/**/*,apps/web/*
 alwaysApply: false
 ---
+---
+description: Next.js app router structure and organization for web application
+---
+
 # Next.js App Router Structure
 - The web app uses route groups for organization:
   - `apps/web/app/(marketing)/` - Landing pages

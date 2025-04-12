@@ -1,0 +1,17 @@
+---
+description: Rules for managing placeholder/temporary content. Consult whenever adding temporary or placeholder content. Consult when auditing for placeholder content.
+globs: 
+alwaysApply: false
+---
+---
+description: Standards for temporary and placeholder content
+---
+
+# Temporary/Placeholder Content Rules 🛠️
+- All placeholder content must be marked with a standardized comment tag
+- Use the format `/* @PLACEHOLDER - Description of what needs to be replaced */`
+- For JSX/TSX inline comments use `{/* @PLACEHOLDER - Description */}`
+- For HTML use `<!-- @PLACEHOLDER - Description -->`
+- For CSS use `/* @PLACEHOLDER - Description */`
+- All placeholder comments must include a brief description of what should replace it
+- Never ship code to production with @PLACEHOLDER tags remaining

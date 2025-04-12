@@ -3,15 +3,11 @@ description:
 globs: packages/ui/src/components/**/*.tsx,packages/ui/src/stories/**/*.tsx
 alwaysApply: false
 ---
+---
+description: Rules for Storybook development and component stories
+---
 
-# Component Development Rules
-- Start with shadcn components from `ui/` directory
-- Create elements by extending base components
-- Build patterns by combining elements and base components
-- Create feature components using patterns and elements
-- All new components must use shadcn components as building blocks where applicable
-
-# Story Organization Rules
+# Story Organization Rules 🏗️
 - Stories live in `packages/ui/src/stories/` following component hierarchy:
   - Base components: `stories/ui/`
   - Extended components: `stories/elements/`
@@ -21,18 +17,20 @@ alwaysApply: false
 - Stories must demonstrate all component variants and states
 - Story-specific assets should be placed in `stories/assets/`
 
-# Story Development Rules
+# Story Development Rules 🛠️
 - Each component requires a corresponding story
-- Stories must follow parallel directory structure:
-  ```
-  src/
-  ├── components/ui/button.tsx
-  └── stories/ui/button.stories.tsx
-  ```
-- Stories must include:
-  - All component variants
-  - Interactive controls
-  - Proper documentation
-  - Usage examples
+- Stories must follow parallel directory structure with components
+- All stories must include proper documentation and usage examples
 
+# Story Format Rules 📐
+- Use `args` pattern for simple components
+- Use `render` function for composite components
+- For complex templates with multiple variants, create a template function
+- Always use proper component composition reflecting real usage patterns
 
+# Controls Best Practices 🛠️
+- For React nodes or complex objects, prefer pre-defined variants over controls
+- Use appropriate control types for different prop types:
+  - Text controls for strings
+  - Boolean controls for flags
+  - Select controls for options with predefined values

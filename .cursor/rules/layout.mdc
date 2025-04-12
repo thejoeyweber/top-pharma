@@ -1,0 +1,23 @@
+---
+description: 
+globs: packages/ui/src/components/layouts/**/*.tsx,apps/web/app/**/layout.tsx
+alwaysApply: false
+---
+---
+description: Rules for layout structure and implementation
+---
+
+# Layout Structure Rules 🏗️
+- Layout components live in `packages/ui/src/components/layouts`
+- Layout components are shared across all applications
+- All applications should import layouts from the UI package
+- Never duplicate layout components in application code
+
+# Layout Implementation Rules 🛠️
+- All layout files in Next.js app routes should be thin wrappers importing from UI package
+- Next.js-specific logic stays in app layouts, UI implementation stays in packages
+- The Next.js app uses route groups for organization:
+  - `apps/web/app/(marketing)/` - Landing pages
+  - `apps/web/app/(dashboard)/` - Application pages  
+  - `apps/web/app/(auth)/` - Authentication pages
+- Route groups with parentheses `(groupname)` don't affect URL paths

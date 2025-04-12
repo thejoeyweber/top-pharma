@@ -3,80 +3,20 @@ description:
 globs: 
 alwaysApply: true
 ---
-# Tech Stack
-
-Frontend: Next.js, Tailwind, Shadcn, Framer Motion
-Backend: PostgreSQL, Supabase, Drizzle
-Auth: Clerk
-Payments: Stripe
-
-# General Rules
-
-- use kebab case for naming files
-
-## Comment Rules
-
-- I am new to coding, please write lots of comments to help me understand the code.
-
-# Frontend Rules
-
-## Design Rules
-
-- Use responsive design to account for all screen sizes.
-- Always fetch data in a server component and pass down to a client component
-
-## Component Rules
-
-### Client Component Rules
-
-- Export client components as `export const MyComponent`
-
-# Layout Structure Rules
-- Layout components live in `packages/ui/src/components/layouts`
-- Layout components are shared across all applications in the monorepo
-- All applications should import layouts from the UI package
-- Never duplicate layout components in application code
-
-# Layout Implementation Rules
-- All layout files in Next.js app routes should be thin wrappers that import from the UI package
-- Even for minimal implementations, follow this pattern:
-  ```tsx
-  // In apps/web/app/(marketing)/layout.tsx
-  import { LandingLayout } from "@workspace/ui/components/layouts/landing-layout";
-  
-  export default function MarketingLayout({ children }) {
-    return <LandingLayout>{children}</LandingLayout>;
-  }
-  ```
-- Actual layout implementation should live in the UI package, not in the app
-- Next.js-specific logic stays in app layouts, UI implementation stays in packages
-
-# Command Execution Rules
-- Use PowerShell-compatible commands:
-  - Use `;` instead of `&&` for command chaining
-  - Use `cd` commands separately from other operations
-  - Prefix npm/pnpm commands with `npx` when running one-off tools
-- When installing packages:
-  - Install dependencies from root using `-w` workspace flag
-  - Or navigate to specific package directory first, then install
-- Always run shadcn commands from `apps/web` directory
-- Always verify component.json configurations before adding new components
-
-# Project Structure Rules
+# Project Overview
 - This is a pnpm monorepo using Turborepo
+- Frontend: Next.js, Tailwind, Shadcn, Framer Motion
+- Backend: PostgreSQL, Supabase, Drizzle
+- Auth: Clerk, Payments: Stripe
+
+# Critical Rules
+- Use kebab-case for naming files
 - UI components live in `packages/ui/src/components`
 - Next.js app lives in `apps/web`
-- All shared components must be added to `packages/ui`, not `apps/web`
-
-# Component Usage Rules
-- Always import shared components from `@workspace/ui/components`
-- Never duplicate shared components in `apps/web`
-- Add new shadcn components using: `pnpm dlx shadcn@latest add [component] -c apps/web`
-
-# Component Architecture
-- Components are organized in a hierarchy:
+- Always run shadcn commands from `apps/web` directory
+- New components should follow the architecture hierarchy:
   - Base (shadcn): `packages/ui/src/components/ui`
   - Extended: `packages/ui/src/components/elements`
   - Composite: `packages/ui/src/components/patterns`
   - Domain-specific: `packages/ui/src/components/features`
-- Never modify shadcn components directly, always extend them
+  - Layouts: `packages/ui/src/components/layouts`
