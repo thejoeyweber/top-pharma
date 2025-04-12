@@ -27,10 +27,22 @@ out/
 build
 dist
 
+# Storybook
+/storybook-static
+*.storybook.log
 
 # Debug
 npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
 
 # Misc
 .DS_Store
 *.pem
+.cache
+.idea
+.vscode/*
+!.vscode/extensions.json
+.eslintcache

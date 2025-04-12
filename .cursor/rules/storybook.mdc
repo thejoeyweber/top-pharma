@@ -1,0 +1,38 @@
+---
+description: 
+globs: packages/ui/src/components/**/*.tsx,packages/ui/src/stories/**/*.tsx
+alwaysApply: false
+---
+
+# Component Development Rules
+- Start with shadcn components from `ui/` directory
+- Create elements by extending base components
+- Build patterns by combining elements and base components
+- Create feature components using patterns and elements
+- All new components must use shadcn components as building blocks where applicable
+
+# Story Organization Rules
+- Stories live in `packages/ui/src/stories/` following component hierarchy:
+  - Base components: `stories/ui/`
+  - Extended components: `stories/elements/`
+  - Composite components: `stories/patterns/`
+  - Domain components: `stories/features/`
+- Story files must use format: `[component-name].stories.tsx`
+- Stories must demonstrate all component variants and states
+- Story-specific assets should be placed in `stories/assets/`
+
+# Story Development Rules
+- Each component requires a corresponding story
+- Stories must follow parallel directory structure:
+  ```
+  src/
+  ├── components/ui/button.tsx
+  └── stories/ui/button.stories.tsx
+  ```
+- Stories must include:
+  - All component variants
+  - Interactive controls
+  - Proper documentation
+  - Usage examples
+
+

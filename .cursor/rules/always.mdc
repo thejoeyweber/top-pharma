@@ -1,0 +1,34 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# Command Execution Rules
+- Use PowerShell-compatible commands:
+  - Use `;` instead of `&&` for command chaining
+  - Use `cd` commands separately from other operations
+  - Prefix npm/pnpm commands with `npx` when running one-off tools
+- When installing packages:
+  - Install dependencies from root using `-w` workspace flag
+  - Or navigate to specific package directory first, then install
+- Always run shadcn commands from `apps/web` directory
+- Always verify component.json configurations before adding new components
+
+# Project Structure Rules
+- This is a pnpm monorepo using Turborepo
+- UI components live in `packages/ui/src/components`
+- Next.js app lives in `apps/web`
+- All shared components must be added to `packages/ui`, not `apps/web`
+
+# Component Usage Rules
+- Always import shared components from `@workspace/ui/components`
+- Never duplicate shared components in `apps/web`
+- Add new shadcn components using: `pnpm dlx shadcn@latest add [component] -c apps/web`
+
+# Component Architecture
+- Components are organized in a hierarchy:
+  - Base (shadcn): `packages/ui/src/components/ui`
+  - Extended: `packages/ui/src/components/elements`
+  - Composite: `packages/ui/src/components/patterns`
+  - Domain-specific: `packages/ui/src/components/features`
+- Never modify shadcn components directly, always extend them
