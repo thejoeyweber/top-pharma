@@ -1,0 +1,20 @@
+---
+description: 
+globs: apps/web/**/*,apps/web/*
+alwaysApply: false
+---
+# Next.js App Router Structure
+- The web app uses route groups for organization:
+  - `apps/web/app/(marketing)/` - Landing pages
+  - `apps/web/app/(dashboard)/` - Application pages  
+  - `apps/web/app/(auth)/` - Authentication pages
+- Each route group has its own layout component:
+  - `apps/web/app/(marketing)/layout.tsx` - Uses LandingLayout
+  - `apps/web/app/(dashboard)/layout.tsx` - Uses DashboardLayout
+  - `apps/web/app/(auth)/layout.tsx` - Uses AuthLayout
+- The root layout at `apps/web/app/layout.tsx` contains:
+  - Global providers
+  - HTML/body tags
+  - Font definitions
+  - Theme setup
+- Route groups with parentheses `(groupname)` don't affect URL paths
