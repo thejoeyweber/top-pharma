@@ -3,20 +3,26 @@ description:
 globs: 
 alwaysApply: true
 ---
-# Project Overview
-- This is a pnpm monorepo using Turborepo
-- Frontend: Next.js, Tailwind, Shadcn, Framer Motion
-- Backend: PostgreSQL, Supabase, Drizzle
-- Auth: Clerk, Payments: Stripe
+---
+description: Core project setup, stack, monorepo structure, and critical directives.
+---
 
-# Critical Rules
-- Use kebab-case for naming files
-- UI components live in `packages/ui/src/components`
-- Next.js app lives in `apps/web`
-- Always run shadcn commands from `apps/web` directory
-- New components should follow the architecture hierarchy:
-  - Base (shadcn): `packages/ui/src/components/ui`
-  - Extended: `packages/ui/src/components/elements`
-  - Composite: `packages/ui/src/components/patterns`
-  - Domain-specific: `packages/ui/src/components/features`
-  - Layouts: `packages/ui/src/components/layouts`
+# Project Overview & Stack
+- **Type:** pnpm monorepo using Turborepo.
+- **Frontend:** Next.js (App Router), Tailwind CSS, Shadcn UI, Framer Motion.
+- **Backend:** PostgreSQL (Supabase), Drizzle ORM, Next.js Server Actions.
+- **Auth:** Clerk.
+- **Payments:** Stripe.
+- **Analytics:** PostHog.
+
+# Critical Monorepo Structure
+- **Apps:** `/apps/*` (e.g., `/apps/web`).
+- **Packages:** `/packages/*` (e.g., `/packages/ui`, `/packages/eslint-config`, `/packages/typescript-config`).
+- **Imports:** Use `@workspace/` for package imports, `@/` for intra-app/package imports.
+- **Root:** Config files (pnpm, turbo, tsconfig, prettier).
+
+# UI Component Hierarchy (`packages/ui`)
+- `ui` (Base Shadcn) -> `elements` (Extended) -> `patterns` (Composite) -> `features` (Domain) -> `layouts` (Structure).
+
+# **MANDATORY: Server/Client Directives**
+- **Every `.tsx` file (components, pages, layouts) MUST start with either `"use server"` or `"use client"`. No exceptions.** Determine based on usage of hooks, event handlers, browser APIs (client) vs. server-only logic/data fetching (server).

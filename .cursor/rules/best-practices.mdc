@@ -1,0 +1,60 @@
+---
+description: Detailed general best practices for code quality. Consult for guidance. Consult for refactoring and code optimization tasks.
+globs: 
+alwaysApply: false
+---
+---
+description: Detailed general best practices for code quality. Consult for guidance.
+---
+
+# General Best Practices (Reference)
+
+## Code Structure & Organization
+- **DRY (Don't Repeat Yourself):**
+  - Extract repeated logic into reusable functions/hooks.
+  - Create utility functions (`/lib/utils.ts` or feature-specific utils).
+  - Use shared components (`@workspace/ui` or `apps/web/components`).
+- **Modularity & File Size:**
+  - Split files larger than 300-400 lines.
+  - Separate concerns: UI, data fetching logic (hooks/actions), utility functions.
+  - Create focused components/functions.
+- **Logical File Organization:**
+  - Group by feature/domain where practical.
+  - Use standard directories: `components`, `lib`, `hooks`, `actions`, `db`, `types`.
+  - Follow kebab-case for files/folders.
+
+## Maintainability
+- **Clear Naming:**
+  - Descriptive variable, function, component names (camelCase, PascalCase).
+  - Avoid abbreviations (e.g., prefer `userProfile` over `usrPrf`).
+  - Be consistent.
+- **Documentation & Comments:**
+  - Add JSDoc comments for functions, components, and complex types.
+  - Explain the *why* behind complex or non-obvious code.
+  - Use `@TODO` or `@FIXME` comments for follow-up tasks.
+  - Keep comments up-to-date.
+- **Code Formatting:** Run `pnpm format` regularly (enforced by pre-commit hook).
+- **Type Safety:** Leverage TypeScript. Avoid `any` where possible. Use specific types (`ActionState`, Drizzle types).
+
+## Error Handling
+- **Comprehensive Handling:** Use `try...catch` for I/O, API calls, DB operations.
+- **Specific Errors:** Catch specific error types if possible.
+- **Logging:** Log errors server-side (`console.error`) with context (e.g., function name, relevant IDs).
+- **User Feedback:** Provide clear, user-friendly error messages in the UI (use `ActionState.message`). Don't expose raw error details.
+- **Async Operations:** Always handle promise rejections. Use loading states (`useState`, Suspense) for better UX during async operations.
+
+## Performance Optimization
+- **Minimize Expensive Operations:** Cache results where appropriate (server-side caching, `React.useMemo`).
+- **Rendering:**
+    - Avoid unnecessary re-renders (`React.memo`, `useCallback`).
+    - Use Server Components effectively.
+    - Virtualize long lists if performance degrades.
+    - Lazy load components/libraries (`next/dynamic`).
+- **Database:** Optimize queries (select specific fields, use indexes, pagination). See `backend.mdc`.
+- **Bundle Size:** Monitor bundle size. Code-split effectively.
+- **Memory Leaks:** Clean up event listeners, intervals, timeouts in `useEffect` return functions. Cancel pending async requests on unmount.
+
+## Testing (Future Goal)
+- **Unit Tests:** For utility functions, complex logic, potentially Server Actions.
+- **Integration Tests:** For interactions between components or component-action flows.
+- **End-to-End Tests:** For critical user journeys (e.g., login, checkout).

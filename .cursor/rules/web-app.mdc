@@ -1,24 +1,35 @@
 ---
 description: 
-globs: apps/web/**/*,apps/web/*
+globs: apps/web/app/**/*.tsx,apps/web/actions/**/*.ts,apps/web/components/**/*.tsx,apps/web/lib/**/*.ts
 alwaysApply: false
 ---
 ---
-description: Next.js app router structure and organization for web application
+description: Rules specific to the Next.js web application (`apps/web`). Consult for page/route work.
 ---
 
-# Next.js App Router Structure
-- The web app uses route groups for organization:
-  - `apps/web/app/(marketing)/` - Landing pages
-  - `apps/web/app/(dashboard)/` - Application pages  
-  - `apps/web/app/(auth)/` - Authentication pages
-- Each route group has its own layout component:
-  - `apps/web/app/(marketing)/layout.tsx` - Uses LandingLayout
-  - `apps/web/app/(dashboard)/layout.tsx` - Uses DashboardLayout
-  - `apps/web/app/(auth)/layout.tsx` - Uses AuthLayout
-- The root layout at `apps/web/app/layout.tsx` contains:
-  - Global providers
-  - HTML/body tags
-  - Font definitions
-  - Theme setup
-- Route groups with parentheses `(groupname)` don't affect URL paths
+# App Router Structure (`apps/web`)
+- Use route groups: `(marketing)`, `(dashboard)`, `(auth)`.
+- Each group has a `layout.tsx` importing from `@workspace/ui/components/layouts`.
+- Root layout: `/app/layout.tsx` for globals.
+- Route-specific components: `_components/` subfolder.
+- App-specific shared components: `apps/web/components/`.
+
+# Server & Client Components
+- **Mandatory Directive:** Every `.tsx` file MUST start with `"use server"` or `"use client"`.
+- **Data Fetching:** Fetch in Server Components/Route Handlers. Pass data via props.
+- **Mutations:** Use Server Actions from `apps/web/actions/`.
+- **Suspense:** Use `<Suspense>` with a Skeleton/Fallback in Server Components for async operations.
+- **Client Components:** Use for hooks, event handlers, browser APIs.
+- **Passing Server Components:** Pass as `{children}` prop to Client Components.
+
+# Frontend Practices
+- **Form Validation:**
+    - Use libraries like Zod for schema validation on server actions.
+    - Implement client-side validation for immediate feedback (e.g., with `react-hook-form`).
+    - Provide clear, specific error messages next to form fields.
+    - Handle form submission errors gracefully (displaying messages from `ActionState`).
+- **Performance:**
+    - Avoid unnecessary re-renders (use `React.memo`, `useCallback` where appropriate).
+    - Consider `next/dynamic` for lazy loading heavy components.
+    - Optimize images using `next/image`.
+- **Error Handling (UI):** Display user-friendly messages based on `ActionState` failure or caught client-side errors. Log details to console.

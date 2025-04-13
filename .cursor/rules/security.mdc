@@ -1,0 +1,42 @@
+---
+description: Detailed security best practices. Consult when handling sensitive data or auth.
+globs: 
+alwaysApply: false
+---
+---
+description: Detailed security best practices. Consult when handling sensitive data or auth.
+---
+
+# Security Best Practices (Reference)
+
+## Input Validation & Sanitization
+- **Server-Side Validation:** MANDATORY for all inputs (forms, API, URL params). Use Zod schemas in Server Actions.
+- **Client-Side Validation:** Use for UX, but NEVER rely on it for security.
+- **SQL Injection:** Prevented by using Drizzle ORM correctly (parameterized queries). Do NOT build raw SQL strings with user input.
+- **XSS Prevention:** Sanitize data before rendering (Next.js/React often handle this). Be cautious with `dangerouslySetInnerHTML`. Use libraries if needed for complex sanitization.
+
+## Authentication & Authorization
+- **Authentication:** Verify `userId` from Clerk `auth()` in all protected Server Actions and API routes. Redirect unauthenticated users.
+- **Authorization:** After auth, check if the user has *permission* to perform the action on the specific resource (e.g., `if (resource.userId !== userId) throw new Error("Unauthorized")`).
+- **Role-Based Access:** If implementing roles, check roles explicitly before allowing actions.
+- **Session Management:** Clerk handles session management securely.
+
+## API Security (Webhooks, External APIs)
+- **Webhook Verification:** Verify signatures for incoming webhooks (e.g., Stripe `stripe.webhooks.constructEvent`). Use the webhook secret from env vars.
+- **Rate Limiting:** Consider rate limiting on public API endpoints or sensitive actions if applicable (Vercel might offer options).
+- **Secure Headers:** Configure secure HTTP headers (CSP, HSTS, etc.) in `next.config.mjs` if needed.
+- **HTTPS:** Ensure all connections use HTTPS (Vercel handles this).
+
+## Secrets Management
+- **Storage:** Store ALL secrets (API keys, DB URL, Clerk/Stripe keys) in `.env.local`.
+- **Access:** Use `process.env.SECRET_NAME` ONLY in server-side code (`"use server"` files, API routes).
+- **Exposure:** NEVER prefix secrets with `NEXT_PUBLIC_` unless they are explicitly non-sensitive and required client-side.
+- **`.env.example`:** Keep `.env.example` updated with variable names (no values).
+- **Production:** Use Vercel environment variables for deployment.
+
+## Common Vulnerabilities to Prevent
+- **SQL/NoSQL Injection:** Use ORM methods/parameterized queries.
+- **Cross-Site Scripting (XSS):** Sanitize output, rely on framework defaults.
+- **Cross-Site Request Forgery (CSRF):** Next.js Server Actions have built-in protection. Be mindful if creating traditional API routes.
+- **Broken Authentication:** Use Clerk features correctly (middleware, session management). Enforce strong passwords via Clerk settings if possible.
+- **Insecure Direct Object References (IDOR):** Always perform authorization checks (does user X own resource Y?).

@@ -1,0 +1,42 @@
+---
+description: 
+globs: apps/web/actions/**/*.ts,apps/web/db/**/*.ts,packages/db/**/*.ts
+alwaysApply: false
+---
+---
+description: Rules for backend (Database, Server Actions). Consult for backend logic.
+---
+
+# Backend Overview
+- **Stack:** PostgreSQL (Supabase), Drizzle ORM, Next.js Server Actions.
+- **Location:** Primarily `apps/web/actions/` and `apps/web/db/`.
+
+# Database (`apps/web/db`)
+- **Schema:** Define in `/db/schema/*.ts`, export via `/db/schema/index.ts`, register in `/db/db.ts`.
+- **Schema Rules:**
+    - Standard columns: `id`, `createdAt`, `updatedAt`.
+    - `userId: text("user_id").notNull()` for Clerk users.
+    - Define relations with `references()`. Use `onDelete` appropriately.
+    - Use `pgEnum` for fixed choices.
+    - Export `InsertType` and `SelectType`.
+- **Migrations:**
+    - Generate: `pnpm --filter web db:generate`. Apply: `pnpm --filter web db:migrate`.
+    - **AI Rule:** Do not manually edit migration files.
+- **Querying:**
+    - Use `db` instance from `/db/db.ts`.
+    - **Optimization:** Select only necessary fields (`{ columns: { ... } }`). Create DB indexes for frequently queried/filtered columns (inform user to add index manually). Use pagination (`limit`, `offset`) for large datasets.
+    - **Transactions:** For multi-step operations that must succeed or fail together, use `db.transaction(async (tx) => { ... })`. Ensure atomicity.
+- **Connections:** Drizzle/postgres.js handles pooling; ensure DB URL is secure in `.env.local`.
+
+# Server Actions (`apps/web/actions`)
+- **Location:** `/actions/`, grouped by domain (e.g., `db/todos-actions.ts`).
+- **Naming:** Suffix with `Action`.
+- **Directive:** Start file with `"use server"`.
+- **Return Type:** MUST return `Promise<ActionState<T>>` (defined in `types/server-action-types.ts`). Use `void` for `T` if no data on success.
+- **Structure:**
+    - Use `try...catch`.
+    - `try`: Validate input (Zod recommended), perform logic, return `{ isSuccess: true, ... }`.
+    - `catch`: Log detailed error (`console.error`), return `{ isSuccess: false, message: "User-friendly error" }`.
+- **Auth:** Check `userId` from `auth()` for protected actions. Perform authorization checks (user owns the resource).
+- **Input Validation:** Rigorously validate inputs at the start of every action.
+- **DRY:** Extract repeated logic (e.g., permission checks, complex queries) into helper functions within or outside the action file.

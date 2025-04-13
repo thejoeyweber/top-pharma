@@ -1,18 +1,39 @@
 ---
 description: 
-globs: packages/ui/src/components/**/*.tsx,apps/web/components/**/*.tsx
+globs: packages/ui/src/components/**/*.tsx,apps/web/components/**/*.tsx,packages/ui/src/components/**/*.tsx,apps/web/components/**/*.tsx,apps/web/app/**/_components/**/*.tsx
 alwaysApply: false
 ---
 ---
-description: Rules for component development and usage
+description: Rules for creating/using UI components (Shadcn, custom). Consult for component work.
 ---
 
-# Component Development Rules 🏗️
-- Never modify shadcn components directly, always extend them
-- Start with shadcn base components, then extend as needed
-- Export client components as `export const MyComponent`
-- Add new shadcn components using: `pnpm dlx shadcn@latest add [component] -c apps/web`
+# Component Development (`packages/ui`)
+- **Extend Shadcn:** Never modify base `/ui` components. Extend in `/elements`, `/patterns`, `/features`.
+- **Hierarchy:** Follow `ui` -> `elements` -> `patterns` -> `features`.
+- **Exports:** Use named exports: `export const MyComponent = (...)`.
+- **Props:** Define props using TypeScript interfaces. Use clear names.
+- **DRY:** Extract repeated JSX or logic within/across components into reusable sub-components or utility functions.
+- **Focused Components:** Aim for components that do one thing well. Split large components (>300-400 lines) by concern (data fetching hooks, rendering logic, sub-components).
+- **State Management:**
+    - Keep state as local as possible (`useState`).
+    - Avoid excessive prop drilling; use Context or other state management for deeply shared state if necessary.
+- **Accessibility:**
+    - Use semantic HTML elements (`<button>`, `<nav>`, etc.).
+    - Add necessary ARIA attributes for custom interactive elements.
+    - Ensure keyboard navigability for all interactive elements.
+    - Check color contrast.
 
-# Component Usage Rules 🛠️
-- Always import shared components from `@workspace/ui/components`
-- Never duplicate shared components in `apps/web`
+# Component Usage (`apps/web`)
+- **Imports:** Use `@workspace/ui/*` for shared UI.
+- **Location:**
+    - App-wide shared: `apps/web/components/`.
+    - Route-specific: `apps/web/app/(group)/route/_components/`.
+- **No Duplication:** Don't copy components from `@workspace/ui`.
+- **Data Flow:** Pass data fetched in Server Components down as props to Client Components. Client components should primarily handle UI and interaction.
+- **Server/Client:** Remember the mandatory `"use server"` / `"use client"` directive. Pass Server Components as `{children}` to Client Components if needed.
+
+# Adding Shadcn Components
+- Run `pnpm dlx shadcn-ui@latest add ...` from `apps/web`.
+- Verify `apps/web/components.json` aliases point correctly to `@workspace/ui` first.
+  - `utils`: `@workspace/ui/lib/utils`
+  - `ui`: `@workspace/ui/components/ui`
