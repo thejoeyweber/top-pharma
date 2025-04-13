@@ -32,117 +32,103 @@ import {
 
 export const description = "An interactive area chart"
 
-const chartData = [
-  { date: "2024-04-01", desktop: 222, mobile: 150 },
-  { date: "2024-04-02", desktop: 97, mobile: 180 },
-  { date: "2024-04-03", desktop: 167, mobile: 120 },
-  { date: "2024-04-04", desktop: 242, mobile: 260 },
-  { date: "2024-04-05", desktop: 373, mobile: 290 },
-  { date: "2024-04-06", desktop: 301, mobile: 340 },
-  { date: "2024-04-07", desktop: 245, mobile: 180 },
-  { date: "2024-04-08", desktop: 409, mobile: 320 },
-  { date: "2024-04-09", desktop: 59, mobile: 110 },
-  { date: "2024-04-10", desktop: 261, mobile: 190 },
-  { date: "2024-04-11", desktop: 327, mobile: 350 },
-  { date: "2024-04-12", desktop: 292, mobile: 210 },
-  { date: "2024-04-13", desktop: 342, mobile: 380 },
-  { date: "2024-04-14", desktop: 137, mobile: 220 },
-  { date: "2024-04-15", desktop: 120, mobile: 170 },
-  { date: "2024-04-16", desktop: 138, mobile: 190 },
-  { date: "2024-04-17", desktop: 446, mobile: 360 },
-  { date: "2024-04-18", desktop: 364, mobile: 410 },
-  { date: "2024-04-19", desktop: 243, mobile: 180 },
-  { date: "2024-04-20", desktop: 89, mobile: 150 },
-  { date: "2024-04-21", desktop: 137, mobile: 200 },
-  { date: "2024-04-22", desktop: 224, mobile: 170 },
-  { date: "2024-04-23", desktop: 138, mobile: 230 },
-  { date: "2024-04-24", desktop: 387, mobile: 290 },
-  { date: "2024-04-25", desktop: 215, mobile: 250 },
-  { date: "2024-04-26", desktop: 75, mobile: 130 },
-  { date: "2024-04-27", desktop: 383, mobile: 420 },
-  { date: "2024-04-28", desktop: 122, mobile: 180 },
-  { date: "2024-04-29", desktop: 315, mobile: 240 },
-  { date: "2024-04-30", desktop: 454, mobile: 380 },
-  { date: "2024-05-01", desktop: 165, mobile: 220 },
-  { date: "2024-05-02", desktop: 293, mobile: 310 },
-  { date: "2024-05-03", desktop: 247, mobile: 190 },
-  { date: "2024-05-04", desktop: 385, mobile: 420 },
-  { date: "2024-05-05", desktop: 481, mobile: 390 },
-  { date: "2024-05-06", desktop: 498, mobile: 520 },
-  { date: "2024-05-07", desktop: 388, mobile: 300 },
-  { date: "2024-05-08", desktop: 149, mobile: 210 },
-  { date: "2024-05-09", desktop: 227, mobile: 180 },
-  { date: "2024-05-10", desktop: 293, mobile: 330 },
-  { date: "2024-05-11", desktop: 335, mobile: 270 },
-  { date: "2024-05-12", desktop: 197, mobile: 240 },
-  { date: "2024-05-13", desktop: 197, mobile: 160 },
-  { date: "2024-05-14", desktop: 448, mobile: 490 },
-  { date: "2024-05-15", desktop: 473, mobile: 380 },
-  { date: "2024-05-16", desktop: 338, mobile: 400 },
-  { date: "2024-05-17", desktop: 499, mobile: 420 },
-  { date: "2024-05-18", desktop: 315, mobile: 350 },
-  { date: "2024-05-19", desktop: 235, mobile: 180 },
-  { date: "2024-05-20", desktop: 177, mobile: 230 },
-  { date: "2024-05-21", desktop: 82, mobile: 140 },
-  { date: "2024-05-22", desktop: 81, mobile: 120 },
-  { date: "2024-05-23", desktop: 252, mobile: 290 },
-  { date: "2024-05-24", desktop: 294, mobile: 220 },
-  { date: "2024-05-25", desktop: 201, mobile: 250 },
-  { date: "2024-05-26", desktop: 213, mobile: 170 },
-  { date: "2024-05-27", desktop: 420, mobile: 460 },
-  { date: "2024-05-28", desktop: 233, mobile: 190 },
-  { date: "2024-05-29", desktop: 78, mobile: 130 },
-  { date: "2024-05-30", desktop: 340, mobile: 280 },
-  { date: "2024-05-31", desktop: 178, mobile: 230 },
-  { date: "2024-06-01", desktop: 178, mobile: 200 },
-  { date: "2024-06-02", desktop: 470, mobile: 410 },
-  { date: "2024-06-03", desktop: 103, mobile: 160 },
-  { date: "2024-06-04", desktop: 439, mobile: 380 },
-  { date: "2024-06-05", desktop: 88, mobile: 140 },
-  { date: "2024-06-06", desktop: 294, mobile: 250 },
-  { date: "2024-06-07", desktop: 323, mobile: 370 },
-  { date: "2024-06-08", desktop: 385, mobile: 320 },
-  { date: "2024-06-09", desktop: 438, mobile: 480 },
-  { date: "2024-06-10", desktop: 155, mobile: 200 },
-  { date: "2024-06-11", desktop: 92, mobile: 150 },
-  { date: "2024-06-12", desktop: 492, mobile: 420 },
-  { date: "2024-06-13", desktop: 81, mobile: 130 },
-  { date: "2024-06-14", desktop: 426, mobile: 380 },
-  { date: "2024-06-15", desktop: 307, mobile: 350 },
-  { date: "2024-06-16", desktop: 371, mobile: 310 },
-  { date: "2024-06-17", desktop: 475, mobile: 520 },
-  { date: "2024-06-18", desktop: 107, mobile: 170 },
-  { date: "2024-06-19", desktop: 341, mobile: 290 },
-  { date: "2024-06-20", desktop: 408, mobile: 450 },
-  { date: "2024-06-21", desktop: 169, mobile: 210 },
-  { date: "2024-06-22", desktop: 317, mobile: 270 },
-  { date: "2024-06-23", desktop: 480, mobile: 530 },
-  { date: "2024-06-24", desktop: 132, mobile: 180 },
-  { date: "2024-06-25", desktop: 141, mobile: 190 },
-  { date: "2024-06-26", desktop: 434, mobile: 380 },
-  { date: "2024-06-27", desktop: 448, mobile: 490 },
-  { date: "2024-06-28", desktop: 149, mobile: 200 },
-  { date: "2024-06-29", desktop: 103, mobile: 160 },
-  { date: "2024-06-30", desktop: 446, mobile: 400 },
+// Types for the component props
+export interface TimeRangeOption {
+  value: string;
+  label: string;
+}
+
+export interface ChartDataPoint {
+  date: string;
+  [key: string]: any;
+}
+
+export interface ChartAreaInteractiveProps {
+  /**
+   * Title of the chart card
+   */
+  title?: string;
+  
+  /**
+   * Description text for the chart
+   */
+  description?: string;
+  
+  /**
+   * Array of data points to display in the chart
+   */
+  data: ChartDataPoint[];
+  
+  /**
+   * Chart configuration for visual styling and labels
+   */
+  config: ChartConfig;
+  
+  /**
+   * Available time range options
+   */
+  timeRangeOptions?: TimeRangeOption[];
+  
+  /**
+   * Default selected time range
+   */
+  defaultTimeRange?: string;
+  
+  /**
+   * Field in data to use for the x-axis
+   */
+  dateField?: string;
+  
+  /**
+   * Function to filter data based on the selected time range
+   */
+  filterDataByTimeRange?: (data: ChartDataPoint[], timeRange: string) => ChartDataPoint[];
+}
+
+const defaultTimeRangeOptions = [
+  { value: "90d", label: "Last 3 months" },
+  { value: "30d", label: "Last 30 days" },
+  { value: "7d", label: "Last 7 days" },
 ]
 
-const chartConfig = {
-  visitors: {
-    label: "Visitors",
-  },
-  desktop: {
-    label: "Desktop",
-    color: "var(--primary)",
-  },
-  mobile: {
-    label: "Mobile",
-    color: "var(--primary)",
-  },
-} satisfies ChartConfig
+// Default filter function
+const defaultFilterData = (data: ChartDataPoint[], timeRange: string): ChartDataPoint[] => {
+  if (!data?.length) return [];
+  
+  const lastItem = data[data.length - 1];
+  const referenceDate = lastItem?.date 
+    ? new Date(lastItem.date) 
+    : new Date();
+  
+  let daysToSubtract = 90;
+  
+  if (timeRange === "30d") {
+    daysToSubtract = 30;
+  } else if (timeRange === "7d") {
+    daysToSubtract = 7;
+  }
+  
+  const startDate = new Date(referenceDate);
+  startDate.setDate(startDate.getDate() - daysToSubtract);
+  
+  return data.filter((item) => {
+    const date = new Date(item.date);
+    return date >= startDate;
+  });
+}
 
-export function ChartAreaInteractive() {
+export function ChartAreaInteractive({
+  title = "Chart",
+  description,
+  data,
+  config,
+  timeRangeOptions = defaultTimeRangeOptions,
+  defaultTimeRange = "90d",
+  dateField = "date",
+  filterDataByTimeRange = defaultFilterData
+}: ChartAreaInteractiveProps) {
   const isMobile = useIsMobile()
-  const [timeRange, setTimeRange] = React.useState("90d")
+  const [timeRange, setTimeRange] = React.useState(defaultTimeRange)
 
   React.useEffect(() => {
     if (isMobile) {
@@ -150,30 +136,26 @@ export function ChartAreaInteractive() {
     }
   }, [isMobile])
 
-  const filteredData = chartData.filter((item) => {
-    const date = new Date(item.date)
-    const referenceDate = new Date("2024-06-30")
-    let daysToSubtract = 90
-    if (timeRange === "30d") {
-      daysToSubtract = 30
-    } else if (timeRange === "7d") {
-      daysToSubtract = 7
-    }
-    const startDate = new Date(referenceDate)
-    startDate.setDate(startDate.getDate() - daysToSubtract)
-    return date >= startDate
-  })
+  if (!data?.length || !config) {
+    return null;
+  }
+
+  const filteredData = filterDataByTimeRange(data, timeRange)
 
   return (
     <Card className="@container/card">
       <CardHeader>
-        <CardTitle>Total Visitors</CardTitle>
-        <CardDescription>
-          <span className="hidden @[540px]/card:block">
-            Total for the last 3 months
-          </span>
-          <span className="@[540px]/card:hidden">Last 3 months</span>
-        </CardDescription>
+        <CardTitle>{title}</CardTitle>
+        {description && (
+          <CardDescription>
+            <span className="hidden @[540px]/card:block">
+              {description}
+            </span>
+            <span className="@[540px]/card:hidden">
+              {description.split(" ").slice(-2).join(" ")}
+            </span>
+          </CardDescription>
+        )}
         <CardAction>
           <ToggleGroup
             type="single"
@@ -182,35 +164,33 @@ export function ChartAreaInteractive() {
             variant="outline"
             className="hidden *:data-[slot=toggle-group-item]:!px-4 @[767px]/card:flex"
           >
-            <ToggleGroupItem value="90d">Last 3 months</ToggleGroupItem>
-            <ToggleGroupItem value="30d">Last 30 days</ToggleGroupItem>
-            <ToggleGroupItem value="7d">Last 7 days</ToggleGroupItem>
+            {timeRangeOptions.map((option) => (
+              <ToggleGroupItem key={option.value} value={option.value}>
+                {option.label}
+              </ToggleGroupItem>
+            ))}
           </ToggleGroup>
           <Select value={timeRange} onValueChange={setTimeRange}>
             <SelectTrigger
               className="flex w-40 **:data-[slot=select-value]:block **:data-[slot=select-value]:truncate @[767px]/card:hidden"
               size="sm"
-              aria-label="Select a value"
+              aria-label="Select a time range"
             >
-              <SelectValue placeholder="Last 3 months" />
+              <SelectValue placeholder={timeRangeOptions[0]?.label} />
             </SelectTrigger>
             <SelectContent className="rounded-xl">
-              <SelectItem value="90d" className="rounded-lg">
-                Last 3 months
-              </SelectItem>
-              <SelectItem value="30d" className="rounded-lg">
-                Last 30 days
-              </SelectItem>
-              <SelectItem value="7d" className="rounded-lg">
-                Last 7 days
-              </SelectItem>
+              {timeRangeOptions.map((option) => (
+                <SelectItem key={option.value} value={option.value} className="rounded-lg">
+                  {option.label}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
         </CardAction>
       </CardHeader>
       <CardContent className="px-2 pt-4 sm:px-6 sm:pt-6">
         <ChartContainer
-          config={chartConfig}
+          config={config}
           className="aspect-auto h-[250px] w-full"
         >
           <AreaChart data={filteredData}>
@@ -242,57 +222,48 @@ export function ChartAreaInteractive() {
             </defs>
             <CartesianGrid vertical={false} />
             <XAxis
-              dataKey="date"
+              dataKey={dateField}
               tickLine={false}
               axisLine={false}
               tickMargin={8}
               minTickGap={32}
               tickFormatter={(value) => {
+                // Format date for display
                 const date = new Date(value)
-                return date.toLocaleDateString("en-US", {
+                if (isNaN(date.getTime())) return value
+                return new Intl.DateTimeFormat("en-US", {
                   month: "short",
                   day: "numeric",
-                })
+                }).format(date)
               }}
             />
+            {/* Add chart areas for all keys except date */}
+            {Object.keys(filteredData[0] || {})
+              .filter(key => key !== dateField)
+              .map((key) => (
+                <Area
+                  key={key}
+                  type="monotone"
+                  dataKey={key}
+                  stroke={`var(--color-${key})`}
+                  fill={`url(#fill${key.charAt(0).toUpperCase() + key.slice(1)})`}
+                  strokeWidth={2}
+                />
+              ))}
             <ChartTooltip
-              content={({ active, payload }) => {
-                if (active && payload?.length) {
-                  const date = new Date(payload[0].payload.date)
-                  const formattedDate = date.toLocaleDateString("en-US", {
-                    month: "long",
-                    day: "numeric",
-                    year: "numeric",
-                  })
-                  return (
-                    <ChartTooltipContent
-                      className="bg-background border-none"
-                      content={{
-                        date: formattedDate,
-                        desktop: payload[0].value,
-                        mobile: payload[1].value,
-                      }}
-                    />
-                  )
-                }
-                return null
-              }}
-            />
-            <Area
-              type="monotone"
-              dataKey="desktop"
-              stroke="var(--color-desktop)"
-              fill="url(#fillDesktop)"
-              activeDot={{ r: 3 }}
-              strokeWidth={2}
-            />
-            <Area
-              type="monotone"
-              dataKey="mobile"
-              stroke="var(--color-mobile)"
-              fill="url(#fillMobile)"
-              activeDot={{ r: 3 }}
-              strokeWidth={2}
+              content={
+                <ChartTooltipContent
+                  formatter={(value: any) => `${value}`}
+                  labelFormatter={(label: string) => {
+                    const date = new Date(label)
+                    if (isNaN(date.getTime())) return label
+                    return new Intl.DateTimeFormat("en-US", {
+                      month: "long",
+                      day: "numeric",
+                    }).format(date)
+                  }}
+                />
+              }
             />
           </AreaChart>
         </ChartContainer>

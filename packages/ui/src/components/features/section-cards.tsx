@@ -8,59 +8,78 @@ import {
   IconUserCheck,
 } from "@tabler/icons-react"
 
-import { Card, CardContent, CardHeader, CardTitle } from "@workspace/ui/components/ui/card"
+import { StatCardGrid } from "../patterns/stat-card-grid.js"
+import type { StatCardProps } from "../patterns/stat-card.js"
 
-export function SectionCards() {
+export interface SectionCardsProps {
+  /**
+   * Array of stat card data
+   */
+  cards?: StatCardProps[];
+  
+  /**
+   * Responsive column configuration
+   */
+  columns?: {
+    sm?: number;
+    md?: number;
+    lg?: number;
+    xl?: number;
+  };
+}
+
+// Placeholder cards for development and testing
+const placeholderCards: StatCardProps[] = [
+  {
+    title: "[Example] Total Customers",
+    value: "0",
+    change: {
+      value: "+0%",
+      direction: "up" as const,
+    },
+    icon: <IconUserCheck className="size-4" />,
+  },
+  {
+    title: "[Example] Processing Time",
+    value: "0 hrs",
+    change: {
+      value: "0%",
+      direction: "neutral" as const,
+    },
+    icon: <IconClock className="size-4" />,
+  },
+  {
+    title: "[Example] Total Packages",
+    value: "0",
+    change: {
+      value: "0%",
+      direction: "neutral" as const,
+    },
+    icon: <IconBoxSeam className="size-4" />,
+  },
+  {
+    title: "[Example] Active Campaigns",
+    value: "0",
+    change: {
+      value: "0%",
+      direction: "neutral" as const,
+    },
+    icon: <IconTrophy className="size-4" />,
+  },
+]
+
+export function SectionCards({ 
+  cards,
+  columns = { sm: 1, md: 2, lg: 4 }
+}: SectionCardsProps) {
+  if (!cards?.length) {
+    return null;
+  }
+
   return (
-    <div className="grid grid-cols-1 gap-4 px-4 md:grid-cols-2 lg:grid-cols-4 lg:px-6">
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">Total Customers</CardTitle>
-          <IconUserCheck className="size-4 text-muted-foreground" />
-        </CardHeader>
-        <CardContent>
-          <div className="text-2xl font-bold">2,350</div>
-          <p className="text-xs text-muted-foreground">
-            <span className="text-primary">+10.1%</span> from last month
-          </p>
-        </CardContent>
-      </Card>
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">Processing Time</CardTitle>
-          <IconClock className="size-4 text-muted-foreground" />
-        </CardHeader>
-        <CardContent>
-          <div className="text-2xl font-bold">24.5 hrs</div>
-          <p className="text-xs text-muted-foreground">
-            <span className="text-primary">-2.5%</span> from last month
-          </p>
-        </CardContent>
-      </Card>
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">Total Packages</CardTitle>
-          <IconBoxSeam className="size-4 text-muted-foreground" />
-        </CardHeader>
-        <CardContent>
-          <div className="text-2xl font-bold">12,234</div>
-          <p className="text-xs text-muted-foreground">
-            <span className="text-primary">+5.2%</span> from last month
-          </p>
-        </CardContent>
-      </Card>
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">Active Campaigns</CardTitle>
-          <IconTrophy className="size-4 text-muted-foreground" />
-        </CardHeader>
-        <CardContent>
-          <div className="text-2xl font-bold">24</div>
-          <p className="text-xs text-muted-foreground">
-            <span className="text-primary">+18%</span> from last month
-          </p>
-        </CardContent>
-      </Card>
-    </div>
+    <StatCardGrid 
+      cards={cards}
+      columns={columns}
+    />
   )
 } 

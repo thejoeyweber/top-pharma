@@ -9,7 +9,7 @@ interface DashboardLayoutProps {
 export function DashboardLayout({ children }: DashboardLayoutProps) {
   return (
     <SidebarProvider>
-      <AppSidebar />
+      <AppSidebar appName="Top Pharma" />
       <SidebarInset>
         {/* @PLACEHOLDER - Header will be implemented later */}
         <header className="h-16 border-b border-border/40">

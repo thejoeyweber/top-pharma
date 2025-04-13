@@ -58,7 +58,7 @@ export type Payment = {
   email: string
 }
 
-export const columns: ColumnDef<Payment>[] = [
+export const defaultColumns: ColumnDef<Payment>[] = [
   {
     accessorKey: "status",
     header: ({ column }) => {
@@ -121,26 +121,63 @@ export const columns: ColumnDef<Payment>[] = [
   },
 ]
 
-interface DataTableProps<TData, TValue> {
-  className?: string
-  data: TData[] | z.infer<typeof schema>[]
+export interface DataTableProps<TData, TValue> {
+  /**
+   * CSS class name for styling
+   */
+  className?: string;
+  
+  /**
+   * Data to display in the table
+   */
+  data: TData[];
+  
+  /**
+   * Column definitions for the table
+   */
+  columns?: ColumnDef<TData, TValue>[];
+  
+  /**
+   * Field to use for filtering (default: "email")
+   */
+  filterField?: string;
+  
+  /**
+   * Placeholder text for filter input
+   */
+  filterPlaceholder?: string;
+  
+  /**
+   * Page size options
+   */
+  pageSizeOptions?: number[];
+  
+  /**
+   * Default page size
+   */
+  defaultPageSize?: number;
 }
 
 export function DataTable<TData, TValue>({
   className,
   data,
+  columns,
+  filterField = "email",
+  filterPlaceholder = "Filter...",
+  pageSizeOptions = [5, 10, 20, 30, 40, 50],
+  defaultPageSize = 10
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([])
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    []
-  )
-  const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>({})
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
+  const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
   const [rowSelection, setRowSelection] = React.useState({})
+
+  // Use provided columns or fall back to default columns (with type casting)
+  const tableColumns = columns || (defaultColumns as unknown as ColumnDef<TData, TValue>[])
 
   const table = useReactTable({
     data,
-    columns: columns as ColumnDef<TData, TValue>[],
+    columns: tableColumns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
@@ -155,23 +192,30 @@ export function DataTable<TData, TValue>({
       columnVisibility,
       rowSelection,
     },
+    initialState: {
+      pagination: {
+        pageSize: defaultPageSize,
+      },
+    },
   })
 
   return (
     <div className={cn("space-y-4 px-4 lg:px-6", className)}>
-      <div className="flex items-center gap-2">
-        <div className="relative w-full max-w-sm">
-          <IconSearch className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-          <Input
-            placeholder="Filter emails..."
-            value={(table.getColumn("email")?.getFilterValue() as string) ?? ""}
-            onChange={(event) =>
-              table.getColumn("email")?.setFilterValue(event.target.value)
-            }
-            className="w-full rounded-lg border-0 bg-muted pl-8 focus-visible:ring-1"
-          />
+      {filterField && table.getColumn(filterField) && (
+        <div className="flex items-center gap-2">
+          <div className="relative w-full max-w-sm">
+            <IconSearch className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+            <Input
+              placeholder={filterPlaceholder}
+              value={(table.getColumn(filterField)?.getFilterValue() as string) ?? ""}
+              onChange={(event) =>
+                table.getColumn(filterField)?.setFilterValue(event.target.value)
+              }
+              className="w-full rounded-lg border-0 bg-muted pl-8 focus-visible:ring-1"
+            />
+          </div>
         </div>
-      </div>
+      )}
       <div className="rounded-md border">
         <Table>
           <TableHeader>
@@ -212,7 +256,7 @@ export function DataTable<TData, TValue>({
             ) : (
               <TableRow>
                 <TableCell
-                  colSpan={columns.length}
+                  colSpan={tableColumns.length}
                   className="h-24 text-center"
                 >
                   No results.
@@ -242,7 +286,7 @@ export function DataTable<TData, TValue>({
                 />
               </SelectTrigger>
               <SelectContent side="top">
-                {[5, 10, 20, 30, 40, 50].map((pageSize) => (
+                {pageSizeOptions.map((pageSize) => (
                   <SelectItem key={pageSize} value={`${pageSize}`}>
                     {pageSize}
                   </SelectItem>
@@ -250,19 +294,16 @@ export function DataTable<TData, TValue>({
               </SelectContent>
             </Select>
           </div>
-          <div className="flex w-[100px] items-center justify-center text-sm font-medium">
-            Page {table.getState().pagination.pageIndex + 1} of{" "}
-            {table.getPageCount()}
-          </div>
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-2">
             <Button
               variant="outline"
-              className="hidden h-8 w-8 p-0 lg:flex"
+              className="h-8 w-8 p-0"
               onClick={() => table.setPageIndex(0)}
               disabled={!table.getCanPreviousPage()}
             >
               <span className="sr-only">Go to first page</span>
               <IconChevronLeft className="h-4 w-4" />
+              <IconChevronLeft className="h-4 w-4 -ml-2" />
             </Button>
             <Button
               variant="outline"
@@ -284,12 +325,13 @@ export function DataTable<TData, TValue>({
             </Button>
             <Button
               variant="outline"
-              className="hidden h-8 w-8 p-0 lg:flex"
+              className="h-8 w-8 p-0"
               onClick={() => table.setPageIndex(table.getPageCount() - 1)}
               disabled={!table.getCanNextPage()}
             >
               <span className="sr-only">Go to last page</span>
               <IconChevronRight className="h-4 w-4" />
+              <IconChevronRight className="h-4 w-4 -ml-2" />
             </Button>
           </div>
         </div>

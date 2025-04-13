@@ -6,7 +6,9 @@
   "scripts": {
     "lint": "eslint . --max-warnings 0",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+    "build": "tsup src/index.ts --format esm,cjs --dts --external react",
+    "dev": "tsup src/index.ts --format esm,cjs --watch --dts --external react"
   },
   "dependencies": {
     "@radix-ui/react-avatar": "^1.1.4",
@@ -55,6 +57,7 @@
     "playwright": "^1.51.1",
     "storybook": "8.6.12",
     "tailwindcss": "^4.0.8",
+    "tsup": "^8.0.2",
     "typescript": "^5.7.3",
     "vitest": "^3.1.1"
   },
