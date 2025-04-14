@@ -1,6 +1,6 @@
 ---
 description: 
-globs: apps/web/actions/**/*.ts,apps/web/db/**/*.ts,packages/db/**/*.ts
+globs: apps/*/actions/**/*.ts,packages/db/**/*.ts
 alwaysApply: false
 ---
 ---
@@ -9,10 +9,10 @@ description: Rules for backend (Database, Server Actions). Consult for backend l
 
 # Backend Overview
 - **Stack:** PostgreSQL (Supabase), Drizzle ORM, Next.js Server Actions.
-- **Location:** Primarily `apps/web/actions/` and `apps/web/db/`.
+- **Location:** Server Actions in `apps/*/actions/`, database in `packages/db/`.
 
-# Database (`apps/web/db`)
-- **Schema:** Define in `/db/schema/*.ts`, export via `/db/schema/index.ts`, register in `/db/db.ts`.
+# Database (`packages/db`)
+- **Schema:** Define in `/src/schema/*.ts`, export via `/src/schema/index.ts`.
 - **Schema Rules:**
     - Standard columns: `id`, `createdAt`, `updatedAt`.
     - `userId: text("user_id").notNull()` for Clerk users.
@@ -20,16 +20,16 @@ description: Rules for backend (Database, Server Actions). Consult for backend l
     - Use `pgEnum` for fixed choices.
     - Export `InsertType` and `SelectType`.
 - **Migrations:**
-    - Generate: `pnpm --filter web db:generate`. Apply: `pnpm --filter web db:migrate`.
+    - Generate: `pnpm --filter @workspace/db generate`. Apply: `pnpm --filter @workspace/db migrate`.
     - **AI Rule:** Do not manually edit migration files.
 - **Querying:**
-    - Use `db` instance from `/db/db.ts`.
+    - Import and use `db` instance from `@workspace/db`.
     - **Optimization:** Select only necessary fields (`{ columns: { ... } }`). Create DB indexes for frequently queried/filtered columns (inform user to add index manually). Use pagination (`limit`, `offset`) for large datasets.
     - **Transactions:** For multi-step operations that must succeed or fail together, use `db.transaction(async (tx) => { ... })`. Ensure atomicity.
 - **Connections:** Drizzle/postgres.js handles pooling; ensure DB URL is secure in `.env.local`.
 
-# Server Actions (`apps/web/actions`)
-- **Location:** `/actions/`, grouped by domain (e.g., `db/todos-actions.ts`).
+# Server Actions (`apps/*/actions`)
+- **Location:** `/actions/`, grouped by domain (e.g., `actions/todos-actions.ts`).
 - **Naming:** Suffix with `Action`.
 - **Directive:** Start file with `"use server"`.
 - **Return Type:** MUST return `Promise<ActionState<T>>` (defined in `types/server-action-types.ts`). Use `void` for `T` if no data on success.

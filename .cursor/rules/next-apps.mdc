@@ -1,23 +1,23 @@
 ---
 description: 
-globs: apps/web/app/**/*.tsx,apps/web/actions/**/*.ts,apps/web/components/**/*.tsx,apps/web/lib/**/*.ts
+globs: apps/**/app/**/*.tsx
 alwaysApply: false
 ---
 ---
-description: Rules specific to the Next.js web application (`apps/web`). Consult for page/route work.
+description:  Rules for Next.js applications in the monorepo. Consult for page/route work.
 ---
 
-# App Router Structure (`apps/web`)
+# App Router Structure
 - Use route groups: `(marketing)`, `(dashboard)`, `(auth)`.
 - Each group has a `layout.tsx` importing from `@workspace/ui/components/layouts`.
 - Root layout: `/app/layout.tsx` for globals.
 - Route-specific components: `_components/` subfolder.
-- App-specific shared components: `apps/web/components/`.
+- App-specific shared components: `components/`.
 
 # Server & Client Components
 - **Mandatory Directive:** Every `.tsx` file MUST start with `"use server"` or `"use client"`.
 - **Data Fetching:** Fetch in Server Components/Route Handlers. Pass data via props.
-- **Mutations:** Use Server Actions from `apps/web/actions/`.
+- **Mutations:** Use Server Actions from `actions/`.
 - **Suspense:** Use `<Suspense>` with a Skeleton/Fallback in Server Components for async operations.
 - **Client Components:** Use for hooks, event handlers, browser APIs.
 - **Passing Server Components:** Pass as `{children}` prop to Client Components.
@@ -33,3 +33,8 @@ description: Rules specific to the Next.js web application (`apps/web`). Consult
     - Consider `next/dynamic` for lazy loading heavy components.
     - Optimize images using `next/image`.
 - **Error Handling (UI):** Display user-friendly messages based on `ActionState` failure or caught client-side errors. Log details to console.
+
+# Database Integration
+- Import database client and types from `@workspace/db`
+- Use Server Actions for all database operations
+- Follow schema organization rules from db-package.mdc

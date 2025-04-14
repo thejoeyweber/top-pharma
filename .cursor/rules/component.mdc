@@ -1,6 +1,6 @@
 ---
 description: 
-globs: packages/ui/src/components/**/*.tsx,apps/web/components/**/*.tsx,packages/ui/src/components/**/*.tsx,apps/web/components/**/*.tsx,apps/web/app/**/_components/**/*.tsx
+globs: apps/*/components/**/*.tsx,packages/ui/**/*.tsx
 alwaysApply: false
 ---
 ---

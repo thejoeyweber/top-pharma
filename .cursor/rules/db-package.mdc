@@ -1,0 +1,35 @@
+---
+description: 
+globs: packages/db/**/*.ts
+alwaysApply: false
+---
+---
+description: Rules for the shared database package. Consult for database schema and integration work.
+---
+
+# Package Structure
+- **Schema Location:** All schemas in `src/schema/*.ts`
+- **Exports:** All public exports through `src/index.ts`
+- **Types:** Export types for all schemas and utilities
+
+# Schema Organization
+- **Staging Schema:**
+    - Tables prefixed with source name (e.g., `source_name_raw`)
+    - Include metadata columns: `_fetched_at`, `_source_id`
+    - Raw data stored in JSONB columns where appropriate
+- **Public Schema:**
+    - Clean, normalized tables without prefixes
+    - Standard columns as per backend.mdc
+    - Proper relationships and constraints
+
+# Airbyte Integration
+- **Table Naming:** Match Airbyte connection names
+- **Schema Sync:** Update schema files when Airbyte schemas change
+- **Metadata:** Track source and sync information
+- **Error Handling:** Log sync failures and data issues
+
+# Usage Guidelines
+- Import from root: `import { db, schema } from "@workspace/db"`
+- Use types for all database operations
+- Keep schema changes in sync with migrations
+- Document all public exports and types
