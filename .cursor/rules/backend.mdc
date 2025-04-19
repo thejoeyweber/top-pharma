@@ -4,39 +4,100 @@ globs: apps/*/actions/**/*.ts,packages/db/**/*.ts
 alwaysApply: false
 ---
 ---
-description: Rules for backend (Database, Server Actions). Consult for backend logic.
+description: Authoritative guide for Drizzle ORM, schema design, migrations, and Server Actions.
 ---
 
 # Backend Overview
-- **Stack:** PostgreSQL (Supabase), Drizzle ORM, Next.js Server Actions.
-- **Location:** Server Actions in `apps/*/actions/`, database in `packages/db/`.
+Stack: **PostgreSQL (Supabase) + Drizzle ORM + Next.js Server Actions**.
+Schema code lives in `packages/db`, actions in `apps/*/actions`.
 
-# Database (`packages/db`)
-- **Schema:** Define in `/src/schema/*.ts`, export via `/src/schema/index.ts`.
-- **Schema Rules:**
-    - Standard columns: `id`, `createdAt`, `updatedAt`.
-    - `userId: text("user_id").notNull()` for Clerk users.
-    - Define relations with `references()`. Use `onDelete` appropriately.
-    - Use `pgEnum` for fixed choices.
-    - Export `InsertType` and `SelectType`.
-- **Migrations:**
-    - Generate: `pnpm --filter @workspace/db generate`. Apply: `pnpm --filter @workspace/db migrate`.
-    - **AI Rule:** Do not manually edit migration files.
-- **Querying:**
-    - Import and use `db` instance from `@workspace/db`.
-    - **Optimization:** Select only necessary fields (`{ columns: { ... } }`). Create DB indexes for frequently queried/filtered columns (inform user to add index manually). Use pagination (`limit`, `offset`) for large datasets.
-    - **Transactions:** For multi-step operations that must succeed or fail together, use `db.transaction(async (tx) => { ... })`. Ensure atomicity.
-- **Connections:** Drizzle/postgres.js handles pooling; ensure DB URL is secure in `.env.local`.
+---
+## 1. Database Rules (`packages/db`)
+### 1.1 Schema Location & Naming
+- Place table definitions under `src/schema/*-schema.ts` (kebab‑case prefix, e.g., `companies-schema.ts`).
+- Re‑export every schema from `src/schema/index.ts`.
 
-# Server Actions (`apps/*/actions`)
-- **Location:** `/actions/`, grouped by domain (e.g., `actions/todos-actions.ts`).
-- **Naming:** Suffix with `Action`.
-- **Directive:** Start file with `"use server"`.
-- **Return Type:** MUST return `Promise<ActionState<T>>` (defined in `types/server-action-types.ts`). Use `void` for `T` if no data on success.
-- **Structure:**
-    - Use `try...catch`.
-    - `try`: Validate input (Zod recommended), perform logic, return `{ isSuccess: true, ... }`.
-    - `catch`: Log detailed error (`console.error`), return `{ isSuccess: false, message: "User-friendly error" }`.
-- **Auth:** Check `userId` from `auth()` for protected actions. Perform authorization checks (user owns the resource).
-- **Input Validation:** Rigorously validate inputs at the start of every action.
-- **DRY:** Extract repeated logic (e.g., permission checks, complex queries) into helper functions within or outside the action file.
+### 1.2 Required Columns
+| Column | Type | Details |
+|--------|------|---------|
+| `id` | `uuid` primary key (`defaultRandom()`) |
+| `createdAt` | `timestamp` (`defaultNow()`) |
+| `updatedAt` | `timestamp` (`defaultNow()` + `.$onUpdate(() => new Date())`) |
+| `userId` (when relevant) | `text` `notNull()` | Clerk user linkage |
+
+### 1.3 Enums Example
+```ts
+import { pgEnum } from "drizzle-orm/pg-core"
+export const membershipEnum = pgEnum("membership", ["free", "pro"])
+```
+
+### 1.4 Relations Example
+```ts
+import { pgTable, uuid, text } from "drizzle-orm/pg-core"
+import { chatsTable } from "./chats-schema"
+export const messagesTable = pgTable("messages", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  chatId: uuid("chat_id").references(() => chatsTable.id, { onDelete: "cascade" }).notNull(),
+  content: text("content").notNull()
+})
+```
+
+### 1.5 Migrations
+- **Generate:** `pnpm --filter @workspace/db generate`  
+- **Apply:** `pnpm --filter @workspace/db migrate`
+- **AI Rule:** *Never* hand‑edit generated migration SQL.
+
+---
+## 2. Querying & Performance
+- Import `db` from `@workspace/db`.
+- Select only necessary columns:
+  ```ts
+  db.select({ id: users.id, email: users.email })
+  ```
+- Paginate large queries (`limit`, `offset`).
+- Add DB indexes to high‑cardinality filter columns (notify maintainer to create index manually).
+- Use `db.transaction()` for multi‑step atomic operations.
+
+---
+## 3. Server Actions (`apps/*/actions`)
+### 3.1 File & Function Conventions
+| Aspect | Rule |
+|--------|------|
+| Folder | group by domain (`actions/companies-actions.ts`). |
+| Directive | File starts with `"use server"`. |
+| Naming | Functions end with `Action`. CRUD order inside file. |
+| Return | `Promise<ActionState<T>>`. `T = void` when no data returned. |
+
+### 3.2 Skeleton Example (CRUD)
+```ts
+"use server"
+import { db } from "@workspace/db"
+import { companiesTable, InsertCompany, SelectCompany } from "@workspace/db"
+import { ActionState } from "@/types"
+import { eq } from "drizzle-orm"
+
+export async function createCompanyAction(
+  company: InsertCompany
+): Promise<ActionState<SelectCompany>> {
+  try {
+    const [newCompany] = await db.insert(companiesTable).values(company).returning()
+    return { isSuccess: true, message: "Company created", data: newCompany }
+  } catch (error) {
+    console.error("createCompanyAction error:", error)
+    return { isSuccess: false, message: "Failed to create company" }
+  }
+}
+```
+
+### 3.3 Validation & Auth
+- Validate inputs with **Zod** before DB operations.
+- Retrieve `{ userId }` via `auth()`; throw if unauthenticated.
+- Confirm the user owns or is authorized for the resource.
+
+### 3.4 Date Columns
+- When comparing or inserting JS `Date` objects, convert to ISO strings (`.toISOString()`) to match `PgDateString` typing.
+
+---
+## 4. Additional References
+- **Auth specifics:** `auth.mdc`
+- **Payments, Storage, Analytics:** dedicated rule files.

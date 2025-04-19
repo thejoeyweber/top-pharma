@@ -1,0 +1,65 @@
+---
+description: Follow these rules whenever interacting with Supabase Storage.
+globs: 
+alwaysApply: false
+---
+---
+description: Follow these rules whenever interacting with Supabase Storage.
+---
+
+# Storage Rules (Supabase Storage)
+
+## General Conventions
+- **Bucket names** are injected via env vars (`STORAGE_BUCKET_PROFILE_IMAGES`, etc.). Never hard‑code a bucket.
+- Use `createClientComponentClient` in Client Components; use service‑role key in Server Actions when elevated permissions are required (NEVER expose it client‑side).
+
+## Bucket Organization
+| Bucket | Purpose | Policy |
+|--------|---------|--------|
+| `profile-images` | User avatars | Public read, authenticated write |
+| `documents` | PDFs & docs | Private (signed URLs) |
+
+> **SQL for RLS** – run in Supabase SQL editor:
+> ```sql
+> create policy "User read/write own files" on storage.objects
+> for all
+> using ( auth.uid()::text = (storage.foldername(name))[1] );
+> ```
+
+## File Path Convention
+```
+{bucket}/{userId}/{purpose}/{filename}
+```
+Example: `documents/123e4567/contracts/2025-04-19-contract.pdf`
+
+## Upload Helper Pattern
+```ts
+"use server"
+import { createServerActionClient } from "@supabase/auth-helpers-nextjs"
+import { ActionState } from "@/types"
+
+export async function uploadFileStorage(
+  bucket: string,
+  path: string,
+  file: File
+): Promise<ActionState<{ path: string }>> {
+  try {
+    const supabase = createServerActionClient()
+    const { data, error } = await supabase.storage.from(bucket).upload(path, file, {
+      upsert: false,
+      contentType: file.type
+    })
+    if (error) throw error
+    return { isSuccess: true, message: "File uploaded", data: { path: data.path } }
+  } catch (error) {
+    console.error("Storage error:", error)
+    return { isSuccess: false, message: "Upload failed" }
+  }
+}
+```
+
+## Validation Defaults
+```ts
+const MAX_FILE_SIZE = 10 * 1024 * 1024 // 10 MB
+const ALLOWED_MIME = ["image/jpeg", "image/png", "image/webp"]
+```

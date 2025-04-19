@@ -1,0 +1,25 @@
+---
+description: Conventions for implementing analytics & event tracking.
+globs: 
+alwaysApply: false
+---
+---
+description: Conventions for implementing analytics & event tracking.
+---
+
+# Analytics Rules (PostHog)
+
+## Client‑Side Usage
+- Load the PostHog JS snippet in [`apps/web/app/layout.tsx`] **only** when `process.env.NEXT_PUBLIC_POSTHOG_KEY` exists.
+- Wrap initialization in `useEffect` to guard SSR.
+
+## Event Naming
+- Use **verb‑object** pattern, lowercase, dashed: `clicked-link`, `viewed-product-page`, `completed-checkout`.
+
+## Properties
+- Structure: `{ context: "pricing", plan: "pro" }`.
+- Never send PII. Instead, rely on user ID & PostHog’s own user‑property hashing.
+
+## Feature Flags & Experiments
+- Place helpers in `@workspace/analytics/flags.ts`.
+- Use PostHog’s API via Server Actions for secure flag retrieval if needed on the server.

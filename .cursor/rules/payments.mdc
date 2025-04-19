@@ -1,0 +1,33 @@
+---
+description: Follow these rules when adding or modifying Stripe logic.
+globs: 
+alwaysApply: false
+---
+---
+description: Follow these rules when adding or modifying Stripe logic.
+---
+
+# Payments Rules (Stripe)
+
+## Libraries & Setup
+- Use the official `stripe` npm package v14+.
+- Initialize once per file:
+  ```ts
+  import Stripe from "stripe"
+  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: "2023-10-16" })
+  ```
+
+## Webhooks
+1. **Verify signatures** using `stripe.webhooks.constructEvent` with `STRIPE_WEBHOOK_SECRET`.
+2. Place webhook handler under `apps/web/app/api/stripe/webhook/route.ts` (Server Action style).
+3. Respond **200** even on handled error to avoid multiple retries – log internally.
+
+## Billing Conventions
+- Customer `id` stored on the **user** record in DB (`stripeCustomerId`).
+- Subscription `id` stored in `subscriptions` table; update status via webhook events (`invoice.payment_succeeded`, `customer.subscription.*`).
+
+## UI
+- Use `react-stripe-js` & Stripe Elements for card capture, embedded as a Client Component.
+
+## Security
+- Never expose secret keys to the client. Only publishable key is `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`.

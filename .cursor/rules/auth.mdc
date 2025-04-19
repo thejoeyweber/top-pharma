@@ -1,0 +1,35 @@
+---
+description: Use these conventions whenever implementing or modifying auth‑related code.
+globs: 
+alwaysApply: false
+---
+---
+description: Use these conventions whenever implementing or modifying auth‑related code.
+---
+
+# Auth Rules (Clerk)
+
+## Imports & Helpers
+- **Server Side:**
+  ```ts
+  import { auth, currentUser } from "@clerk/nextjs/server"
+  ```
+- **Client Side:**
+  ```ts
+  import { useAuth, useUser, ClerkLoaded } from "@clerk/nextjs"
+  ```
+
+## Server Actions & Route Handlers
+1. Call `const { userId } = auth()` at the top.  
+2. If `!userId` ➜ throw `Unauthorized` **or** redirect to `/sign-in` as appropriate.
+3. Perform *authorization* (ownership / role checks) after authentication.
+
+## Middleware
+- Public routes list lives in `/middleware.ts` → keep sign‑in, sign‑up, webhook routes public. All other pages require auth.
+
+## Session Best Practices
+- Never trust client‑sent user IDs. Always use Clerk helpers server‑side.
+- Avoid storing JWTs in localStorage. Clerk manages cookies securely.
+
+## Role Model
+- Web App: single role (`user`). Admin App: extend with `admin`, `super-admin`. Role checking helpers should live in `@workspace/auth-utils` when implemented.

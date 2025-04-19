@@ -46,3 +46,6 @@ lerna-debug.log*
 .vscode/*
 !.vscode/extensions.json
 .eslintcache
+
+# Docs
+_docs/*

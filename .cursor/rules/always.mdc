@@ -4,25 +4,61 @@ globs:
 alwaysApply: true
 ---
 ---
-description: Core project setup, stack, monorepo structure, and critical directives.
+description: Core project setup, stack, monorepo structure, global rules that apply to every file.
 ---
 
-# Project Overview & Stack
-- **Type:** pnpm monorepo using Turborepo.
-- **Frontend:** Next.js (App Router), Tailwind CSS, Shadcn UI, Framer Motion.
-- **Backend:** PostgreSQL (Supabase), Drizzle ORM, Next.js Server Actions.
+# Project Overview & Tech Stack
+- **Type:** `pnpm` monorepo managed by **Turborepo**.
+- **Frontend:** Next.js (App Router), Tailwind CSS, Shadcn UI, Framer Motion.
+- **Backend:** PostgreSQL (Supabase), Drizzle ORM, Next.js Server Actions.
 - **Auth:** Clerk.
 - **Payments:** Stripe.
 - **Analytics:** PostHog.
+- **Storage:** Supabase Storage.
+- **Deployment:** Vercel.
 
-# Critical Monorepo Structure
-- **Apps:** `/apps/*` (e.g., `/apps/web`).
-- **Packages:** `/packages/*` (e.g., `/packages/ui`, `/packages/eslint-config`, `/packages/typescript-config`).
-- **Imports:** Use `@workspace/` for package imports, `@/` for intra-app/package imports.
-- **Root:** Config files (pnpm, turbo, tsconfig, prettier).
+# Monorepo Structure (MANDATORY)
+| Folder | Purpose |
+|--------|---------|
+| `/apps/*` | App‑level code (e.g. `web`, `admin-dashboard`). |
+| `/packages/ui` | Shared UI component library (Shadcn base + extensions). |
+| `/packages/db` | Shared database client, schema & migrations. |
+| `/packages/*` | Other shared packages (eslint‑config, ts‑config, utilities). |
+| **Root** | Project‑wide config files (`pnpm-workspace.yaml`, `turbo.json`, `tsconfig.json`, `prettier.config.*`). |
 
-# UI Component Hierarchy (`packages/ui`)
-- `ui` (Base Shadcn) -> `elements` (Extended) -> `patterns` (Composite) -> `features` (Domain) -> `layouts` (Structure).
+### Import Aliases
+- Use `@workspace/*` to import between packages.
+- Inside an **app**, use `@/*` for intra‑app paths.
 
-# **MANDATORY: Server/Client Directives**
-- **Every `.tsx` file (components, pages, layouts) MUST start with either `"use server"` or `"use client"`. No exceptions.** Determine based on usage of hooks, event handlers, browser APIs (client) vs. server-only logic/data fetching (server).
+# Global Coding Directives
+1. **Every `.tsx` file MUST start with exactly one of:**  
+   - `"use server"` – for files executed **only** on the server (Server Components, Server Actions).  
+   - `"use client"` – for files that run in the browser (use hooks, event handlers, or browser APIs).
+2. **Never commit a file lacking the directive.** Cursor will refuse the edit.
+
+# Environment Variable Rules
+- All secrets & runtime config ➜ `.env.local` (never checked in).  
+- Provide keys & names (NOT values) in `.env.example` on every change.
+- Only expose variables to the client when strictly necessary, using the `NEXT_PUBLIC_` prefix.
+
+# Type Rules
+- Place custom types in `@/types`; file names in kebab‑case (`example-types.ts`).
+- Re‑export from `types/index.ts`.
+- Prefer `interface` over `type` aliases except for union/utility types.
+- Shared action state type available:  
+  ```ts
+  export type ActionState<T> =
+    | { isSuccess: true; message: string; data: T }
+    | { isSuccess: false; message: string; data?: never }
+  ```
+
+# Commit Quality Gates
+- `pnpm format` & `pnpm lint` must pass before pushing.  
+- No `@PLACEHOLDER` comments allowed in production code (see `temp-content.mdc`).
+- Keep files under **400 LOC**; refactor when larger.
+
+# Where to Look Next
+- **Backend rules:** `backend.mdc` & `db-package.mdc`  
+- **UI / Components:** `component.mdc`, `layout.mdc`, `next-apps.mdc`  
+- **Auth / Payments / Storage / Analytics:** `auth.mdc`, `payments.mdc`, `storage.mdc`, `analytics.mdc`  
+- **Security:** `security.mdc`

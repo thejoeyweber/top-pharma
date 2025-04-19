@@ -4,32 +4,32 @@ globs: packages/db/**/*.ts
 alwaysApply: false
 ---
 ---
-description: Rules for the shared database package. Consult for database schema and integration work.
+description: Structure, exports, and Airbyte integration guidelines for `@workspace/db`.
 ---
 
 # Package Structure
-- **Schema Location:** All schemas in `src/schema/*.ts`
-- **Exports:** All public exports through `src/index.ts`
-- **Types:** Export types for all schemas and utilities
+```
+packages/db
+  └─ src/
+      ├─ schema/
+      │   ├─ *-schema.ts
+      │   └─ index.ts         ← re‑exports
+      ├─ migrations/          ← generated
+      ├─ client.ts            ← drizzle client instance
+      └─ index.ts             ← public API (client + schema + types)
+```
 
-# Schema Organization
-- **Staging Schema:**
-    - Tables prefixed with source name (e.g., `source_name_raw`)
-    - Include metadata columns: `_fetched_at`, `_source_id`
-    - Raw data stored in JSONB columns where appropriate
-- **Public Schema:**
-    - Clean, normalized tables without prefixes
-    - Standard columns as per backend.mdc
-    - Proper relationships and constraints
+## Exports
+```ts
+// src/index.ts
+export * as schema from "./schema"
+export { db } from "./client"
+```
 
-# Airbyte Integration
-- **Table Naming:** Match Airbyte connection names
-- **Schema Sync:** Update schema files when Airbyte schemas change
-- **Metadata:** Track source and sync information
-- **Error Handling:** Log sync failures and data issues
+## Staging vs Public Schema
+- **Staging**: tables prefixed with source name (`fmp_raw`) for Airbyte dumps. Include metadata columns `_fetched_at`, `_source_id`, raw JSONB.
+- **Public**: cleaned & normalized tables; expose through `@workspace/db`.
 
-# Usage Guidelines
-- Import from root: `import { db, schema } from "@workspace/db"`
-- Use types for all database operations
-- Keep schema changes in sync with migrations
-- Document all public exports and types
+## Airbyte
+- Connection ↔ table name match. Keep schema files updated when Airbyte adds/changes columns.
+- Log sync failures with `console.error` + PostHog event `airbyte-sync-failed`.
