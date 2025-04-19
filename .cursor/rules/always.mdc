@@ -20,7 +20,7 @@ description: Core project setup, stack, monorepo structure, global rules that ap
 # Monorepo Structure (MANDATORY)
 | Folder | Purpose |
 |--------|---------|
-| `/apps/*` | App‑level code (e.g. `web`, `admin-dashboard`). |
+| `/apps/*` | App‑level code (e.g. `web`, `admin`). |
 | `/packages/ui` | Shared UI component library (Shadcn base + extensions). |
 | `/packages/db` | Shared database client, schema & migrations. |
 | `/packages/*` | Other shared packages (eslint‑config, ts‑config, utilities). |
