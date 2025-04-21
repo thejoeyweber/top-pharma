@@ -40,6 +40,9 @@ description: Core project setup, stack, monorepo structure, global rules that ap
 - All secrets & runtime config ➜ `.env.local` (never checked in).  
 - Provide keys & names (NOT values) in `.env.example` on every change.
 - Only expose variables to the client when strictly necessary, using the `NEXT_PUBLIC_` prefix.
+- **Monorepo structure:** Place `.env.example` and `.env.local` at the project root, not in individual apps.
+- Turborepo automatically forwards root environment variables to all workspaces during builds.
+- For non-Next.js packages that need env vars (like `packages/db`), use the `@next/env` package to load them.
 
 # Type Rules
 - Place custom types in `@/types`; file names in kebab‑case (`example-types.ts`).
