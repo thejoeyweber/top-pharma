@@ -3,7 +3,7 @@
 import * as React from "react"
 import { Area, AreaChart, CartesianGrid, XAxis } from "recharts"
 
-import { useIsMobile } from "@workspace/ui/hooks/use-mobile"
+import { useIsMobile } from "@workspace/hooks"
 import { cn } from "@workspace/ui/lib/utils"
 import {
   Card,
@@ -79,7 +79,7 @@ export interface ChartAreaProps {
   /**
    * The data to display in the chart
    */
-  data: Array<Record<string, any>>;
+  data: Array<Record<string, string | number>>;
   
   /**
    * The key in the data object that contains the X axis value (usually a date)

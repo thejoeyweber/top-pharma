@@ -15,10 +15,12 @@ import {
 } from "@tanstack/react-table"
 import {
   IconArrowsSort,
-  IconChevronDown,
   IconChevronLeft,
   IconChevronRight,
   IconSearch,
+  IconArrowDown,
+  IconArrowUp,
+  IconArrowsUpDown,
 } from "@tabler/icons-react"
 import { z } from "zod"
 

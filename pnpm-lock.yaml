@@ -325,6 +325,25 @@ importers:
         specifier: ^8.24.1
         version: 8.24.1(eslint@9.20.1(jiti@2.4.2))(typescript@5.7.3)
 
+  packages/hooks:
+    dependencies:
+      react:
+        specifier: ^19.0.0
+        version: 19.0.0
+    devDependencies:
+      '@types/react':
+        specifier: ^19
+        version: 19.0.10
+      '@workspace/eslint-config':
+        specifier: workspace:*
+        version: link:../eslint-config
+      '@workspace/typescript-config':
+        specifier: workspace:*
+        version: link:../typescript-config
+      typescript:
+        specifier: ^5.3.3
+        version: 5.7.3
+
   packages/typescript-config: {}
 
   packages/ui:
@@ -471,6 +490,25 @@ importers:
       vitest:
         specifier: ^3.1.1
         version: 3.1.1(@types/node@20.17.19)(@vitest/browser@3.1.1)(jiti@2.4.2)(lightningcss@1.29.1)
+
+  packages/utils:
+    dependencies:
+      bcryptjs:
+        specifier: ^2.4.3
+        version: 2.4.3
+    devDependencies:
+      '@types/bcryptjs':
+        specifier: ^2.4.6
+        version: 2.4.6
+      '@workspace/eslint-config':
+        specifier: workspace:*
+        version: link:../eslint-config
+      '@workspace/typescript-config':
+        specifier: workspace:*
+        version: link:../typescript-config
+      typescript:
+        specifier: ^5.3.3
+        version: 5.7.3
 
 packages:
 

@@ -3,7 +3,7 @@
 import * as React from "react"
 import { Area, AreaChart, CartesianGrid, XAxis } from "recharts"
 
-import { useIsMobile } from "@workspace/ui/hooks/use-mobile"
+import { useIsMobile } from "@workspace/hooks"
 import {
   Card,
   CardAction,
@@ -40,7 +40,7 @@ export interface TimeRangeOption {
 
 export interface ChartDataPoint {
   date: string;
-  [key: string]: any;
+  [key: string]: string | number;
 }
 
 export interface ChartAreaInteractiveProps {
@@ -253,7 +253,7 @@ export function ChartAreaInteractive({
             <ChartTooltip
               content={
                 <ChartTooltipContent
-                  formatter={(value: any) => `${value}`}
+                  formatter={(value: number | string) => `${value}`}
                   labelFormatter={(label: string) => {
                     const date = new Date(label)
                     if (isNaN(date.getTime())) return label

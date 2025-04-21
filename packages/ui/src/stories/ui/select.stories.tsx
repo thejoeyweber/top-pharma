@@ -1,4 +1,5 @@
-import type { Meta, StoryFn, StoryObj } from '@storybook/react';
+import type { Meta } from "@storybook/react"
+
 import {
   Select,
   SelectContent,
@@ -7,7 +8,7 @@ import {
   SelectLabel,
   SelectTrigger,
   SelectValue,
-} from '@workspace/ui/components/ui/select';
+} from "@workspace/ui/components/ui/select"
 
 /**
  * Select components allow users to select a value from a list of options.
@@ -27,7 +28,6 @@ const meta = {
 } satisfies Meta<typeof Select>;
 
 export default meta;
-type Story = StoryObj<typeof Select>;
 
 // Define interface for our template props
 interface SelectTemplateProps {
@@ -40,7 +40,7 @@ interface SelectTemplateProps {
 }
 
 // Create a template for the Select component
-const SelectTemplate: StoryFn<SelectTemplateProps> = ({
+const SelectTemplate = ({
   placeholder = 'Select an option',
   disabled = false,
   label,
@@ -51,7 +51,7 @@ const SelectTemplate: StoryFn<SelectTemplateProps> = ({
   ],
   triggerSize,
   scrollable = false,
-}) => (
+}: SelectTemplateProps) => (
   <Select disabled={disabled}>
     <SelectTrigger className="w-[180px]" size={triggerSize}>
       <SelectValue placeholder={placeholder} />
@@ -72,7 +72,7 @@ const SelectTemplate: StoryFn<SelectTemplateProps> = ({
 /**
  * The default select with a list of options
  */
-export const Default: StoryObj<SelectTemplateProps> = {
+export const Default = {
   render: SelectTemplate,
   args: {
     placeholder: 'Select a fruit',
@@ -82,7 +82,7 @@ export const Default: StoryObj<SelectTemplateProps> = {
 /**
  * Select with a label for the option group
  */
-export const WithLabel: StoryObj<SelectTemplateProps> = {
+export const WithLabel = {
   render: SelectTemplate,
   args: {
     placeholder: 'Select a fruit',
@@ -93,7 +93,7 @@ export const WithLabel: StoryObj<SelectTemplateProps> = {
 /**
  * Disabled select that cannot be interacted with
  */
-export const Disabled: StoryObj<SelectTemplateProps> = {
+export const Disabled = {
   render: SelectTemplate,
   args: {
     placeholder: 'Select a fruit',
@@ -104,7 +104,7 @@ export const Disabled: StoryObj<SelectTemplateProps> = {
 /**
  * Small size variant of the select component
  */
-export const Small: StoryObj<SelectTemplateProps> = {
+export const Small = {
   render: SelectTemplate,
   args: {
     placeholder: 'Select a fruit',
@@ -115,7 +115,7 @@ export const Small: StoryObj<SelectTemplateProps> = {
 /**
  * For when you have many options, use the scrollable variant with ScrollArea component.
  */
-export const Scrollable: StoryObj<SelectTemplateProps> = {
+export const Scrollable = {
   render: SelectTemplate,
   args: {
     placeholder: 'Select a language',

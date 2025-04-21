@@ -1,5 +1,6 @@
-import type { Meta, StoryFn, StoryObj } from '@storybook/react';
-import { Button } from '@workspace/ui/components/ui/button';
+import type { Meta } from "@storybook/react"
+
+import { Button } from "@workspace/ui/components/ui/button"
 import {
   Card,
   CardContent,
@@ -7,7 +8,7 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from '@workspace/ui/components/ui/card';
+} from "@workspace/ui/components/ui/card"
 
 /**
  * Cards are used to group related information. They can contain various content types 
@@ -34,7 +35,6 @@ const meta = {
 } satisfies Meta<typeof Card>;
 
 export default meta;
-type Story = StoryObj<typeof Card>;
 
 // Define prop types for our template
 interface CardTemplateProps {
@@ -46,14 +46,14 @@ interface CardTemplateProps {
 }
 
 // Create a template that accepts args
-const CardTemplate: StoryFn<CardTemplateProps> = ({
+const CardTemplate = ({
   title,
   description,
   content,
   footer,
   className,
   ...args
-}) => (
+}: CardTemplateProps) => (
   <Card className={`w-[380px] ${className || ''}`} {...args}>
     {(title || description) && (
       <CardHeader>
@@ -70,7 +70,7 @@ const CardTemplate: StoryFn<CardTemplateProps> = ({
  * The standard card includes a header with title and description,
  * content, and a footer with actions.
  */
-export const Standard: StoryObj<CardTemplateProps> = {
+export const Standard = {
   args: {
     title: 'Create project',
     description: 'Deploy your new project in one-click.',
@@ -88,7 +88,7 @@ export const Standard: StoryObj<CardTemplateProps> = {
 /**
  * A card displaying notification items with a call-to-action footer.
  */
-export const Notifications: StoryObj<CardTemplateProps> = {
+export const Notifications = {
   args: {
     title: 'Notifications',
     description: 'You have 3 unread messages.',
@@ -128,7 +128,7 @@ export const Notifications: StoryObj<CardTemplateProps> = {
 /**
  * A simple card with only content and no header or footer.
  */
-export const Simple: StoryObj<CardTemplateProps> = {
+export const Simple = {
   args: {
     content: <p>A simple card with only content.</p>,
     className: 'pt-6',
@@ -139,7 +139,7 @@ export const Simple: StoryObj<CardTemplateProps> = {
 /**
  * A card with only a header, useful for simple information displays.
  */
-export const HeaderOnly: StoryObj<CardTemplateProps> = {
+export const HeaderOnly = {
   args: {
     title: 'Team Members',
     description: 'Manage your team membership.',

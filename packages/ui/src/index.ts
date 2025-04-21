@@ -19,8 +19,8 @@ export * from "./components/features/section-cards"
 // Layout Components
 export * from "./components/layouts/dashboard-layout"
 
-// Hooks
-export * from "./hooks/use-mobile"
+// Hooks are now in @workspace/hooks
+// export * from "./hooks/use-mobile"; // Removed export
 
 // Utils
 export * from "./lib/utils" 

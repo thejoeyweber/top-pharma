@@ -1,20 +1,18 @@
 import { Meta, StoryObj } from '@storybook/react';
 import {
-  IconCamera,
   IconChartBar,
   IconDashboard,
   IconDatabase,
-  IconFileAi,
-  IconFileDescription,
-  IconFileWord,
   IconFolder,
   IconHelp,
+  IconHome,
   IconListDetails,
   IconReport,
   IconSearch,
   IconSettings,
   IconUsers,
-} from '@tabler/icons-react';
+  IconFileWord,
+} from "@tabler/icons-react"
 
 import { AppSidebar } from '@workspace/ui/components/patterns/app-sidebar';
 import { MenuItem, DocumentItem, UserInfo } from '@workspace/ui/components/patterns/app-sidebar';

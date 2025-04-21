@@ -2,7 +2,7 @@
 
 import * as React from "react"
 
-import { useIsMobile } from "@workspace/ui/hooks/use-mobile"
+import { useIsMobile } from "@workspace/hooks"
 import { cn } from "@workspace/ui/lib/utils"
 import {
   SidebarTrigger,

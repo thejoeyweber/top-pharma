@@ -1,21 +1,26 @@
 {
   "$schema": "https://turbo.build/schema.json",
   "ui": "tui",
+  "globalEnv": ["NODE_ENV"],
+  "globalDependencies": [".env*"],
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
-      "inputs": ["$TURBO_DEFAULT$", ".env*"],
-      "outputs": [".next/**", "!.next/cache/**"]
+      "inputs": ["$TURBO_DEFAULT$"],
+      "outputs": [".next/**", "!.next/cache/**"],
+      "env": ["DATABASE_URL", "SUPABASE_SERVICE_ROLE_KEY"]
     },
     "lint": {
-      "dependsOn": ["^lint"]
+      "dependsOn": ["^lint"],
+      "env": ["DATABASE_URL", "SUPABASE_SERVICE_ROLE_KEY"]
     },
     "check-types": {
       "dependsOn": ["^check-types"]
     },
     "dev": {
       "cache": false,
-      "persistent": true
+      "persistent": true,
+      "env": ["DATABASE_URL", "SUPABASE_SERVICE_ROLE_KEY"]
     }
   }
 }
