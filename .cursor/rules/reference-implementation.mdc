@@ -1,0 +1,37 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+reference-implementation
+---
+description: Guidelines for using the reference implementation at `/_reference` as inspiration and acceleration.
+---
+
+# Reference Implementation Overview
+- The directory `/_reference` contains a prototype implementation
+- Use as **inspiration** and **reference** but not for direct copying
+- Check for patterns, component structures, and naming conventions
+
+# When To Check Reference Implementation
+1. **Creating UI Components**: Check corresponding components in `/_reference/components`
+2. **Building Pages**: Review similar pages in `/_reference/app`
+3. **Implementing Hooks**: Consider patterns in `/_reference/hooks`
+4. **Writing Utility Functions**: Examine approaches in `/_reference/lib`
+5. **Styling**: Reference tailwind config and style patterns in `/_reference/styles`
+
+# How To Use References
+- **Study, Don't Copy**: Understand the intent and approach
+- **Adapt to Project Architecture**: Ensure consistency with monorepo structure
+- **Maintain Proper Attribution**: Comment code that's heavily inspired by reference
+- **Improve Where Possible**: Update patterns that can be enhanced
+
+# Integration with Project
+When adapting from reference:
+1. Update imports to use workspace packages (`@workspace/*`)
+2. Migrate from single app structure to monorepo structure
+3. Ensure components match shadcn/UI patterns in `packages/ui`
+4. Convert styling to match project conventions
+
+# Reference Availability Verification
+If you don't see the `/_reference` directory, please notify the maintainers.

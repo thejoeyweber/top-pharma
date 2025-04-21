@@ -16,4 +16,7 @@ const client = postgres(databaseUrl, { max: 1 })
 export const db = drizzle(client, { schema })
 
 // Export the consolidated schema object
-export { schema } 
+export { schema }
+
+export * from './env.js'
+export * from './client.js' 

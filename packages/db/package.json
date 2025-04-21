@@ -13,6 +13,7 @@
     "studio": "drizzle-kit studio"
   },
   "dependencies": {
+    "@next/env": "^15.2.3",
     "drizzle-orm": "^0.29.4",
     "postgres": "^3.4.3"
   },

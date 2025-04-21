@@ -28,3 +28,8 @@ description: Standards for developing, extending, and consuming UI components.
 ### Accessibility
 - Prefer semantic elements; ensure keyboard operability.
 - Verify contrast with WCAG AA+.
+
+# Reference Implementation
+- Check `/_reference/components` for implementation patterns and examples
+- Adapt patterns to match project architecture and shadcn/UI conventions
+- See `reference-implementation.mdc` for detailed guidance on using references

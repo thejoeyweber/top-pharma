@@ -16,3 +16,8 @@ description: Rules for layout structure and implementation. Consult for layout w
 - Handle Next.js specifics (metadata, route group context) here.
 - Root layout (`apps/web/app/layout.tsx`) handles global providers, HTML/body, fonts, theme.
 - Use route groups `(groupname)` for organization (e.g., `(marketing)`, `(dashboard)`).
+
+# Reference Implementation
+- Study `/_reference/app` for layout patterns and page organization
+- Adapt layout structures to match project requirements while maintaining consistency
+- See `reference-implementation.mdc` for detailed guidance on using references
