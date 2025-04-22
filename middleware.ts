@@ -1,75 +1,98 @@
 /**
  * @description
- * Next.js middleware using Clerk for authentication and route protection.
- * This middleware runs before requests are processed and determines access based on
- * authentication status and defined public/protected routes.
+ * Root Next.js middleware using Clerk for authentication and route protection
+ * across the entire monorepo (web and admin apps).
  *
  * Key Responsibilities:
  * - Initializes Clerk authentication context for requests.
- * - Protects routes by default, requiring authentication unless explicitly marked public.
- * - Defines public routes accessible to everyone (e.g., marketing pages, API endpoints, Clerk auth pages).
- * - Specifically enforces authentication for the entire `/admin` application path.
- *
- * @dependencies
+ * - Handles build-time vs. runtime: Acts as a no-op during build to prevent
+ *   SSG/ISR errors when Clerk keys might be unavailable. Applies protection at runtime.
+ * - Defines public routes accessible without authentication.
+ * - Protects all non-public routes by default, redirecting unauthenticated users
+ *   to the sign-in page.
+ * - Provides a structure for future role-based access control (RBAC) for admin routes.
  */
-import { NextResponse } from "next/server"
-import type { NextMiddleware } from "next/server"
-import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server"
+import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
+import type { NextRequest } from "next/server";
+import { NextResponse } from "next/server";
+
+// Determine if running during the build phase (keys might be missing)
+// Vercel sets CI=true during builds. Locally, check if keys are missing.
+const isBuildTime =
+  process.env.CI === "true" || !process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY;
+
+if (isBuildTime) {
+  console.log("Middleware: Running in build mode or keys missing, skipping auth checks.");
+}
 
 // Define routes that should be publicly accessible without authentication.
-// This includes marketing pages, API routes, and Clerk's own authentication flow pages.
 const isPublicRoute = createRouteMatcher([
   "/", // Public homepage for the web app
-  "/ui-test", // Public UI test page
-  "/sign-in(.*)", // Clerk sign-in routes
-  "/sign-up(.*)", // Clerk sign-up routes
-  "/api/(.*)", // Allow access to all API routes (specific protection can be added within routes)
-])
+  "/ui-test", // Public UI test page (if exists and intended public)
+  "/sign-in(.*)", // Clerk sign-in flow routes
+  "/sign-up(.*)", // Clerk sign-up flow routes
+  "/api/webhooks(.*)", // Public webhooks (e.g., Stripe)
+  // Add other specific public marketing pages if needed, e.g., '/about', '/contact'
+  // '/(marketing)(.*)', // Example if using a marketing route group that's public
+]);
 
-// Define routes specifically for the admin application.
+// Define routes specifically for the admin application (for potential future RBAC).
 const isAdminRoute = createRouteMatcher([
   "/admin(.*)", // All routes under /admin
-])
+]);
 
 /**
  * Clerk middleware configuration.
  *
- * It checks if the requested route is public. If not, it requires authentication.
- * It also specifically checks if the route is an admin route. If it is and the user
- * is not authenticated, they will be redirected to the sign-in page defined
- * in the environment variables (NEXT_PUBLIC_CLERK_SIGN_IN_URL).
+ * During build time (isBuildTime = true), it returns NextResponse.next() immediately,
+ * effectively disabling auth checks to allow static generation.
  *
- * The `afterAuth` function could be used for role-based checks in the future,
- * but for now, it simply ensures authenticated access to admin routes.
+ * At runtime, it uses clerkMiddleware:
+ * - If a route is NOT public (`!isPublicRoute`), `auth().protect()` is called,
+ *   redirecting unauthenticated users to sign-in.
+ * - The `afterAuth` hook can be used for role checks (example commented out).
  */
-export default clerkMiddleware(async (auth, req) => {
-  const session = await auth();
-  
-  // If the route is not public, enforce authentication.
-  if (!isPublicRoute(req)) {
-    if (!session.userId) {
-      return session.redirectToSignIn({ returnBackUrl: req.url });
-    }
+export default clerkMiddleware(async (auth, req: NextRequest) => {
+  // --- Build Time Check ---
+  // If in build mode or keys are missing, bypass auth checks.
+  if (isBuildTime) {
+    return NextResponse.next();
   }
 
-  // Additional check: If it's an admin route, ensure the user is authenticated.
-  // While the above check already handles this for non-public routes,
-  // this explicitly covers the /admin path regardless of its public status setting (belt and suspenders).
-  // In the future, role checks can be added here using session.has.
+  // --- Runtime Auth Checks ---
+  const { userId, sessionClaims, redirectToSignIn } = await auth();
+
+  // Protect non-public routes
+  if (!isPublicRoute(req) && !userId) {
+    console.log(`Middleware: Protecting non-public route: ${req.nextUrl.pathname}`);
+    // Redirect guest users to sign-in page
+    return redirectToSignIn({ returnBackUrl: req.url });
+  }
+
+  // Optional: Role-based access control for admin routes (example)
   if (isAdminRoute(req)) {
-    if (!session.userId) {
-      return session.redirectToSignIn({ returnBackUrl: req.url });
+    // Ensure user is authenticated (already covered by !isPublicRoute check, but explicit)
+    if (!userId) {
+      console.log(`Middleware: Redirecting unauthenticated user from admin route: ${req.nextUrl.pathname}`);
+      return redirectToSignIn({ returnBackUrl: req.url });
     }
-    // Example for future role check:
-    // if (!session.has({ role: "admin" })) {
-    //   return NextResponse.redirect(new URL("/unauthorized", req.url));
+
+    // Example RBAC: Check for 'admin' role in Clerk metadata
+    // const isAdmin = sessionClaims?.metadata?.role === 'admin';
+    // if (!isAdmin) {
+    //   console.log(`Middleware: Unauthorized access attempt to admin route by user ${userId}`);
+    //   const unauthorizedUrl = new URL('/unauthorized', req.url); // Or redirect to web app home
+    //   return NextResponse.redirect(unauthorizedUrl);
     // }
   }
-}) as NextMiddleware
+
+  // Allow request to proceed if public or authenticated & authorized
+  return NextResponse.next();
+});
 
 // Configuration for the Next.js middleware matcher.
 // This specifies which routes the middleware should run on.
-// It's configured to run on all routes except for static assets and internal Next.js paths.
+// It excludes static assets, image optimization files, and specific API routes like webhooks.
 export const config = {
   matcher: [
     /*
@@ -77,12 +100,11 @@ export const config = {
      * - _next/static (static files)
      * - _next/image (image optimization files)
      * - favicon.ico (favicon file)
-     * - api/trpc (tRPC routes - if you were using tRPC) - Keeping pattern for potential future use
-     * - api/auth (potential custom auth routes - if needed)
-     * - api/webhooks (webhook routes)
-     * Match all routes including api routes unless specifically excluded
+     * - api/webhooks (explicitly public webhooks)
+     * Match all routes including api routes unless specifically excluded.
+     * The Clerk middleware itself handles ignoring internal /_next paths.
      */
     "/((?!_next/static|_next/image|favicon.ico|api/webhooks).*)",
-    "/", // Ensure the root is matched
+    "/", // Ensure the root is matched even if excluded by the negative lookahead
   ],
-} 
+}; 
