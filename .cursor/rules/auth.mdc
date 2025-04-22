@@ -9,12 +9,31 @@ description: Use these conventions whenever implementing or modifying auth‑rel
 
 # Auth Rules (Clerk)
 
+> **Flexibility Note:** Integrating Clerk in a monorepo structure may require adaptations to standard implementation patterns, particularly for environment variable handling. The fundamental patterns below should be followed, but specific implementation details may need adjustment based on testing.
+
+## Environment Variables
+- **Required Configuration:**
+  - Create app-specific `.env.local` files in each app directory (e.g., `apps/web/.env.local` and `apps/admin/.env.local`)
+  - Each file must include the Clerk variables needed by that app:
+    ```
+    NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_...
+    CLERK_SECRET_KEY=sk_test_...
+    NEXT_PUBLIC_CLERK_SIGN_IN_URL="/sign-in"
+    NEXT_PUBLIC_CLERK_SIGN_UP_URL="/sign-up"
+    NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL=/dashboard
+    NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL=/dashboard
+    ```
+  - The root `.env.local` should also contain these variables for build processes
+- **IMPORTANT:** While the project generally follows the pattern of root-level environment variables with Turborepo forwarding, Clerk specifically requires app-specific `.env.local` files in Next.js monorepos to function correctly at runtime. This is a known limitation with Clerk in monorepo setups.
+- **Reason for Exception:** Clerk's client-side components need to access environment variables at runtime, and they look for these variables in the app's own `.env.local` file. This is particularly true for the `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` which must be available to client components.
+- **Deployment Note:** When deploying to Vercel, you'll need to configure environment variables at both the project level and for each individual app deployment.
+
 ## Imports & Helpers
-- **Server Side:**
+- **Server Side:**
   ```ts
   import { auth, currentUser } from "@clerk/nextjs/server"
   ```
-- **Client Side:**
+- **Client Side:**
   ```ts
   import { useAuth, useUser, ClerkLoaded } from "@clerk/nextjs"
   ```

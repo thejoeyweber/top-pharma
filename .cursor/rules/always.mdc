@@ -32,16 +32,24 @@ description: Core project setup, stack, monorepo structure, global rules that ap
 
 # Global Coding Directives
 1. **Every `.tsx` file MUST start with exactly one of:**  
-   - `"use server"` – for files executed **only** on the server (Server Components, Server Actions).  
-   - `"use client"` – for files that run in the browser (use hooks, event handlers, or browser APIs).
+   - `"use server"` – for files executed **only** on the server (Server Components, Server Actions).  
+   - `"use client"` – for files that run in the browser (use hooks, event handlers, or browser APIs).
 2. **Never commit a file lacking the directive.** Cursor will refuse the edit.
+
+> **Flexibility Note:** While these directives provide clear boundaries, some files imported into components that already have a directive may not need their own. Use judgment when a strict application of this rule creates unnecessary complexity.
 
 # Environment Variable Rules
 - All secrets & runtime config ➜ `.env.local` (never checked in).  
 - Provide keys & names (NOT values) in `.env.example` on every change.
 - Only expose variables to the client when strictly necessary, using the `NEXT_PUBLIC_` prefix.
-- **Monorepo structure:** Place `.env.example` and `.env.local` at the project root, not in individual apps.
+- **Monorepo structure:** 
+  - Place primary `.env.example` and `.env.local` at the project root, not in individual apps.
+  - Some integrations (notably Clerk) require app-specific `.env.local` files in app directories (e.g., `apps/web/.env.local`).
+  - See `auth.mdc` for specific details on Clerk environment variable requirements.
 - Turborepo automatically forwards root environment variables to all workspaces during builds.
+- Client-side variables (prefixed with `NEXT_PUBLIC_`) may need special handling in monorepos:
+  - For build time: include in root `.env.local`
+  - For runtime: may require app-specific `.env.local` files depending on the integration
 - For non-Next.js packages that need env vars (like `packages/db`), use the `@next/env` package to load them.
 
 # Type Rules

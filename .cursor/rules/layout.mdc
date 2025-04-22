@@ -7,9 +7,73 @@ alwaysApply: false
 description: Rules for layout structure and implementation. Consult for layout work.
 ---
 
-# Layout Structure Rules (`packages/ui`)
-- Shared layout components live in `packages/ui/src/components/layouts` (e.g., `DashboardLayout`).
-- Implement core UI structure here.
+# Layout Structure Rules
+
+## Core Pattern
+- **Shared Layout Components**: Reside in `packages/ui/src/components/layouts`
+  - Implement core layout logic, styles, animations
+  - Export as named components
+- **App Layout Files**: `apps/web/app/**/layout.tsx` are thin wrappers
+  - Import the shared layouts
+  - Add app-specific providers/context
+  - Server Component directive handling:
+    - Use `"use client"` for layouts using hooks or browser APIs
+    - For server-only layouts, no directive is needed as React Server Components are the default in Next.js App Router
+    - Note: `"use server"` is for **Server Actions** (functions), not Server Components (entire files)
+
+## Implementation Pattern
+For each layout (e.g., "dashboard"):
+
+1. In `packages/ui/src/components/layouts`:
+   ```tsx
+   // dashboard-layout.tsx
+   "use client"; // Only if using hooks or browser APIs
+   
+   export function DashboardLayout({ children }: { children: React.ReactNode }) {
+     return (
+       <div className="dashboard-layout">
+         <Sidebar />
+         <main>{children}</main>
+       </div>
+     );
+   }
+   ```
+
+2. In `apps/web/app/dashboard/layout.tsx`:
+   ```tsx
+   // For server components, no directive is needed
+   // Only add "use client" if using hooks or browser APIs
+   
+   import { DashboardLayout } from "@workspace/ui/components/layouts/dashboard-layout";
+   
+   export default function WebDashboardLayout({
+     children,
+   }: {
+     children: React.ReactNode;
+   }) {
+     return (
+       <DashboardLayout>
+         {/* App-specific providers/context if needed */}
+         {children}
+       </DashboardLayout>
+     );
+   }
+   ```
+
+## Metadata
+- Define metadata in the app's layout files, not in the shared UI package
+- Follow Next.js metadata API patterns:
+  ```tsx
+  export const metadata = {
+    title: "Dashboard | TopPharma",
+    description: "Manage your pharmacy inventory and sales",
+  };
+  ```
+
+## Responsive Behavior
+- All layouts must be fully responsive
+- Test on mobile, tablet, and desktop breakpoints
+- Use Tailwind's responsive utilities
 
 # Layout Implementation Rules (`apps/web`)
 - App layout files (`apps/web/app/**/layout.tsx`) are thin wrappers importing shared layouts.

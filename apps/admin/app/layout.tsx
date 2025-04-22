@@ -3,6 +3,12 @@ import { Geist, Geist_Mono } from "next/font/google"
 import "@workspace/ui/globals.css"
 import { Providers } from "@/components/providers"
 
+// Server-side check for the environment variable
+console.log(
+  "Admin App RootLayout (Server-side): NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY:",
+  process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY ? "Exists" : "MISSING"
+);
+
 const fontSans = Geist({
   subsets: ["latin"],
   variable: "--font-sans",
