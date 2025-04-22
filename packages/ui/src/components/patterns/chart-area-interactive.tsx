@@ -3,7 +3,7 @@
 import * as React from "react"
 import { Area, AreaChart, CartesianGrid, XAxis } from "recharts"
 
-import { useIsMobile } from "@workspace/hooks"
+import { useIsMobile } from "../../hooks/use-mobile"
 import {
   Card,
   CardAction,
@@ -116,6 +116,32 @@ const defaultFilterData = (data: ChartDataPoint[], timeRange: string): ChartData
     return date >= startDate;
   });
 }
+
+const CustomTooltipContent = React.forwardRef<
+  HTMLDivElement,
+  React.ComponentProps<typeof ChartTooltipContent>
+>(({ payload, label, ...props }, ref) => {
+  if (!payload?.length) return null;
+
+  const formattedLabel = (() => {
+    const date = new Date(label as string);
+    if (isNaN(date.getTime())) return label;
+    return new Intl.DateTimeFormat("en-US", {
+      month: "long",
+      day: "numeric",
+    }).format(date);
+  })();
+
+  return (
+    <ChartTooltipContent
+      ref={ref}
+      payload={payload}
+      label={formattedLabel}
+      {...props}
+    />
+  );
+});
+CustomTooltipContent.displayName = "CustomTooltipContent";
 
 export function ChartAreaInteractive({
   title = "Chart",
@@ -251,19 +277,7 @@ export function ChartAreaInteractive({
                 />
               ))}
             <ChartTooltip
-              content={
-                <ChartTooltipContent
-                  formatter={(value: number | string) => `${value}`}
-                  labelFormatter={(label: string) => {
-                    const date = new Date(label)
-                    if (isNaN(date.getTime())) return label
-                    return new Intl.DateTimeFormat("en-US", {
-                      month: "long",
-                      day: "numeric",
-                    }).format(date)
-                  }}
-                />
-              }
+              content={<CustomTooltipContent />}
             />
           </AreaChart>
         </ChartContainer>

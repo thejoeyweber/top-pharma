@@ -1,4 +1,4 @@
-import { config } from "@workspace/eslint-config/base"
+const baseConfig = require("@workspace/eslint-config/base");
 
 /** @type {import("eslint").Linter.Config} */
-export default config 
+module.exports = baseConfig; 
