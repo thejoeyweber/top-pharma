@@ -2,36 +2,33 @@
 
 /**
  * @description
- * This component centralizes application-wide providers for the 'admin' app.
- * It currently includes the NextThemesProvider for theme management and
- * the ClerkProvider for authentication.
- * Conditionally renders ClerkProvider based on the presence of the publishable key
- * to handle build environments where keys might not be available.
+ * Centralizes application-wide providers for the 'admin' app.
+ * Includes NextThemesProvider for theme management and ClerkProvider for authentication.
+ * Assumes NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY is correctly passed via next.config.js.
  *
  * @dependencies
  * - next-themes: Handles theme switching (light/dark/system).
- * - @clerk/nextjs: Provides authentication context and hooks.
+ * - @clerk/nextjs: Provides authentication context and hooks (<ClerkProvider>).
  */
 import * as React from "react"
 import { ThemeProvider as NextThemesProvider } from "next-themes"
 import { ClerkProvider } from "@clerk/nextjs"
 
-// Check if Clerk publishable key is available in the environment
-const clerkPubKey = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY;
-const hasClerkKeys = Boolean(clerkPubKey);
+// Check if Clerk publishable key is available in the environment (primarily for logging)
+const clerkPubKey = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
+const hasClerkKeys = Boolean(clerkPubKey)
 
 if (typeof window !== "undefined") {
   // Runtime check (client-side)
   console.log(
-    "Admin App Providers (Client-side): Clerk Publishable Key available?",
-    hasClerkKeys ? "Yes" : "No"
-  );
-} else {
-  // Build-time/Server-side check
-  console.log(
-    "Admin App Providers (Server-side/Build): Clerk Publishable Key available?",
-    hasClerkKeys ? "Yes" : "No"
-  );
+    "Admin App Providers (Client-side): NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY available?",
+    hasClerkKeys ? `Yes (Starts with: ${clerkPubKey?.substring(0, 5)}...)` : "No"
+  )
+  if (!hasClerkKeys) {
+    console.error(
+      "CRITICAL: Clerk Publishable Key is MISSING on the client-side. Check .env.local and next.config.mjs `env` block."
+    )
+  }
 }
 
 /**
@@ -40,29 +37,13 @@ if (typeof window !== "undefined") {
  * @param {React.ReactNode} props.children - The child components to wrap with providers.
  * @returns {React.ReactElement} The providers wrapping the children.
  */
-export function Providers({ children }: { children: React.ReactNode }): React.ReactElement {
-  // If Clerk keys are missing (e.g., during build without env vars set),
-  // render without ClerkProvider to avoid errors.
-  if (!hasClerkKeys) {
-    console.warn(
-      "Admin App Providers: Clerk keys not found. Rendering without ClerkProvider. This is expected during build if keys are not set."
-    );
-    return (
-      <NextThemesProvider
-        attribute="class"
-        defaultTheme="system"
-        enableSystem
-        disableTransitionOnChange
-        enableColorScheme
-      >
-        {children}
-      </NextThemesProvider>
-    );
-  }
-  
-  // Normal runtime with Clerk authentication
+export function Providers({
+  children,
+}: {
+  children: React.ReactNode
+}): React.ReactElement {
   return (
-    <ClerkProvider publishableKey={clerkPubKey}>
+    <ClerkProvider>
       <NextThemesProvider
         attribute="class"
         defaultTheme="system"
