@@ -5,10 +5,10 @@ import {
   uuid,
 } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
-import { companiesTable } from "./companies-schema.js";
-import { productsTable } from "./products-schema.js";
-import { websiteCategoryEnum } from "../enums.js";
-import { entityVersionsTable } from "./entity-versions-schema.js";
+import { companiesTable } from "./companies-schema";
+import { productsTable } from "./products-schema";
+import { websiteCategoryEnum } from "../enums";
+import { entityVersionsTable } from "./entity-versions-schema";
 
 /**
  * @description Schema for the public `websites` table.

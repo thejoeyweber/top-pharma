@@ -1,7 +1,7 @@
 import { pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
-import { productsTable } from "./products-schema.js";
-import { entityVersionsTable } from "./entity-versions-schema.js";
+import { productsTable } from "./products-schema";
+import { entityVersionsTable } from "./entity-versions-schema";
 
 /**
  * @description Schema for the public `therapeutic_areas` table.

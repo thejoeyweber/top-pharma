@@ -6,11 +6,11 @@ import {
   varchar,
 } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
-import { companiesTable } from "./companies-schema.js";
-import { therapeuticAreasTable } from "./therapeutic-areas-schema.js";
-import { websitesTable } from "./websites-schema.js";
-import { productPhaseEnum } from "../enums.js";
-import { entityVersionsTable } from "./entity-versions-schema.js";
+import { companiesTable } from "./companies-schema";
+import { therapeuticAreasTable } from "./therapeutic-areas-schema";
+import { websitesTable } from "./websites-schema";
+import { productPhaseEnum } from "../enums";
+import { entityVersionsTable } from "./entity-versions-schema";
 
 /**
  * @description Schema for the public `products` table.

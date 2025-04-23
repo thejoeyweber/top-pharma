@@ -1,5 +1,5 @@
 import { pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
-import { entityTypeEnum, notificationFrequencyEnum } from "../enums.js";
+import { entityTypeEnum, notificationFrequencyEnum } from "../enums";
 
 /**
  * @description Schema for the `user_subscriptions` table.

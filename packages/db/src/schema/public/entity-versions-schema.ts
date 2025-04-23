@@ -7,8 +7,8 @@ import {
   uuid,
 } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
-import { entityTypeEnum } from "../enums.js";
-import { companiesTable } from "./companies-schema.js";
+import { entityTypeEnum } from "../enums";
+import { companiesTable } from "./companies-schema";
 
 /**
  * @description Schema for the `entity_versions` table.

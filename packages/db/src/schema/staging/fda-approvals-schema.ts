@@ -7,7 +7,7 @@ import {
   uuid,
   varchar,
 } from "drizzle-orm/pg-core";
-import { processingStatusEnum } from "../enums.js";
+import { processingStatusEnum } from "../enums";
 
 /**
  * @description Defines the 'staging' schema in PostgreSQL.

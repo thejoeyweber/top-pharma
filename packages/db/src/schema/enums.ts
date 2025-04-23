@@ -1,3 +1,11 @@
+/**
+ * @description
+ * Defines shared PostgreSQL enums used across the Top Pharma database schema.
+ * These enums provide controlled vocabularies for specific fields, ensuring data consistency.
+ *
+ * @dependencies
+ * - drizzle-orm/pg-core: Provides the `pgEnum` function for defining PostgreSQL enums.
+ */
 import { pgEnum } from "drizzle-orm/pg-core";
 
 /**
@@ -41,7 +49,7 @@ export const productPhaseEnum = pgEnum("product_phase", [
 ]);
 
 /**
- * @description Defines the frequency options for user notifications/alerts.
+ * @description Defines the frequency options for user notifications/alerts regarding followed entities.
  */
 export const notificationFrequencyEnum = pgEnum("notification_frequency", [
   "immediate",
@@ -50,7 +58,7 @@ export const notificationFrequencyEnum = pgEnum("notification_frequency", [
 ]);
 
 /**
- * @description Defines the types of entities that users can subscribe to or that can be versioned.
+ * @description Defines the types of entities within the system that can be versioned or subscribed to.
  */
 export const entityTypeEnum = pgEnum("entity_type", [
   "company",
