@@ -65,4 +65,28 @@ export const entityTypeEnum = pgEnum("entity_type", [
   "product",
   "therapeutic_area",
   "website",
+]);
+
+/**
+ * @description Defines the types of addresses that can be associated with a company.
+ */
+export const addressTypeEnum = pgEnum("address_type", [
+  "HEADQUARTERS",
+  "MANUFACTURING",
+  "R_AND_D",
+  "MAILING",
+  "BUSINESS",
+  "OTHER",
+]);
+
+/**
+ * @description Defines the types of identifiers that can be associated with a company.
+ */
+export const identifierTypeEnum = pgEnum("identifier_type", [
+  "CIK",
+  "TICKER",
+  "ISIN",
+  "CUSIP",
+  "EIN",
+  "ALIAS",
 ]); 

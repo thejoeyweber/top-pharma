@@ -27,4 +27,12 @@ export default {
   },
   verbose: true, // Enable verbose logging from Drizzle Kit
   strict: true, // Enable strict mode for migration generation
+  schemaFilter: ["public", "staging"],
+  // Add this to prevent Drizzle from deleting Airbyte-managed tables:
+  tablesFilter: [
+    "staging.fmp_company_profiles",
+    "staging.fmp_company_profiles_airbyte_tmp",
+    "staging.fmp_stock_screener",
+    "staging.sec_edgar_quarterly"
+  ],
 } satisfies Config; 
