@@ -17,17 +17,23 @@ import {
   boolean,
   jsonb,
   numeric,
+  index,
+  unique,
 } from "drizzle-orm/pg-core";
 import { addressTypeEnum, processingStatusEnum } from "../enums";
 import { companyAddressesTable } from "../public/company-addresses-schema";
+import { companiesStagingTable } from "./companies-staging-schema";
 import { stagingSchema } from "./_common";
 
 export const companyAddressesStagingTable = stagingSchema.table("company_addresses_staging", {
   // Internal Staging ID
   stagingId: uuid("staging_id").primaryKey().defaultRandom(),
 
+  // Link to Staging Company
+  stagingCompanyId: uuid("staging_company_id")
+    .references(() => companiesStagingTable.stagingId, { onDelete: "cascade" }),
+
   // Mirror of public.company_addresses fields
-  companyId: uuid("company_id"),
   addressType: addressTypeEnum("address_type").default("BUSINESS"),
   streetLine1: text("street_line_1"),
   streetLine2: text("street_line_2"),
@@ -60,7 +66,12 @@ export const companyAddressesStagingTable = stagingSchema.table("company_address
   _airbyte_extracted_at: timestamp("_airbyte_extracted_at", { withTimezone: true }),
   _airbyte_raw_id: varchar("_airbyte_raw_id", { length: 255 }),
   _airbyte_source_name: text("_airbyte_source_name"),
-});
+}, (table) => ({
+  // Index for faster lookups on staging company ID
+  stagingCompanyIdIdx: index("idx_company_addresses_staging_company_id").on(table.stagingCompanyId),
+  // Unique constraint for address upsert - one address per staging company
+  uniqueStagingCompanyAddress: unique("unique_staging_company_address").on(table.stagingCompanyId),
+}));
 
 // Define TypeScript types for inference
 export type SelectCompanyAddressStaging = typeof companyAddressesStagingTable.$inferSelect;

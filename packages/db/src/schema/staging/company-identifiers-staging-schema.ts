@@ -16,17 +16,23 @@ import {
   varchar,
   jsonb,
   numeric,
+  index,
+  unique,
 } from "drizzle-orm/pg-core";
 import { identifierTypeEnum, processingStatusEnum } from "../enums";
 import { companyIdentifiersTable } from "../public/company-identifiers-schema";
+import { companiesStagingTable } from "./companies-staging-schema";
 import { stagingSchema } from "./_common";
 
 export const companyIdentifiersStagingTable = stagingSchema.table("company_identifiers_staging", {
   // Internal Staging ID
   stagingId: uuid("staging_id").primaryKey().defaultRandom(),
 
+  // Link to Staging Company
+  stagingCompanyId: uuid("staging_company_id")
+    .references(() => companiesStagingTable.stagingId, { onDelete: "cascade" }),
+
   // Mirror of public.company_identifiers fields
-  companyId: uuid("company_id"),
   identifierType: identifierTypeEnum("identifier_type").notNull(),
   identifierValue: text("identifier_value").notNull(),
   source: text("source"),
@@ -52,7 +58,12 @@ export const companyIdentifiersStagingTable = stagingSchema.table("company_ident
   _airbyte_extracted_at: timestamp("_airbyte_extracted_at", { withTimezone: true }),
   _airbyte_raw_id: varchar("_airbyte_raw_id", { length: 255 }),
   _airbyte_source_name: text("_airbyte_source_name"),
-});
+}, (table) => ({
+  // Index for faster lookups on staging company ID
+  stagingCompanyIdIdx: index("idx_company_identifiers_staging_company_id").on(table.stagingCompanyId),
+  // Unique constraint for identifier upsert - one identifier of each type per staging company
+  uniqueStagingCompanyIdentifierType: unique("unique_staging_company_identifier_type").on(table.stagingCompanyId, table.identifierType),
+}));
 
 // Define TypeScript types for inference
 export type SelectCompanyIdentifierStaging = typeof companyIdentifiersStagingTable.$inferSelect;

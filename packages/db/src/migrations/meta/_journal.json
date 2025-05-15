@@ -29,6 +29,20 @@
       "when": 1745934843353,
       "tag": "0003_slimy_ronan",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "5",
+      "when": 1746025571840,
+      "tag": "0004_spicy_warbound",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "5",
+      "when": 1746060753846,
+      "tag": "0005_funny_hercules",
+      "breakpoints": true
     }
   ]
 }

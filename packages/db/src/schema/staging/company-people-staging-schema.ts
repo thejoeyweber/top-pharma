@@ -16,6 +16,7 @@ import {
   jsonb,
   numeric,
   varchar,
+  unique,
 } from "drizzle-orm/pg-core";
 import { processingStatusEnum } from "../enums";
 import { companiesStagingTable } from "./companies-staging-schema";
@@ -67,7 +68,14 @@ export const companyPeopleStagingTable = stagingSchema.table(
     }),
     _airbyte_raw_id: varchar("_airbyte_raw_id", { length: 255 }),
     _airbyte_source_name: text("_airbyte_source_name"),
-  }
+  },
+  (table) => ({
+    // Unique constraint for person upsert - one person with each name per staging company
+    uniqueStagingCompanyPersonName: unique("unique_staging_company_person_name").on(
+      table.stagingCompanyId, 
+      table.name
+    ),
+  })
 );
 
 // Define TypeScript types for inference
